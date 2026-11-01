@@ -1,9 +1,13 @@
 struct Light
 {
-    float3 dirOrPos;
-    int type;
-    float4 color;
-    float intensity;
+      float3 direction;
+      float3 position;
+      float4 color;
+      int type;
+      float intensity;
+      float distance;
+      float decay;
+      float cosAngle;
 };
 
 StructuredBuffer<Light> g_lights : register(t3);

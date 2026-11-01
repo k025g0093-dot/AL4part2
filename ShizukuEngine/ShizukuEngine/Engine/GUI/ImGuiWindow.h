@@ -65,6 +65,9 @@ class ImGuiLightManagerWindow : public ImGuiUIWindow
 {
 public:
     void update(LightManager* lm);
+private:
+    int mNewLightType=0;
+
 };
 
 //カメラの位置・回転などをGUIで操作する
