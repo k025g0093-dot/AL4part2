@@ -40,9 +40,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	Emitter emitter{};
 	emitter.position = { 0.0f, 2.0f, 0.0f };
-	emitter.count = 10;
-	emitter.velocityRange = { 1.0f, 1.0f, 1.0f };
-	emitter.frequency = 0.5f;
+	emitter.count = 3;
+	emitter.velocityRange = { 10.0f, 10.0f, 10.0f };
+	emitter.frequency = 0.01f;
 	engine->CreateEmitter(emitter, particle);
 
 	MSG msg{};

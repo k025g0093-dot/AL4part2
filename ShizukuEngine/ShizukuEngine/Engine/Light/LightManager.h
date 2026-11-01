@@ -19,7 +19,7 @@ public:
     ~LightManager();
 
 
-    static const int maxLight = 10;
+    static const int maxLight = 100;
 
     void Initialize(ComPtr<ID3D12Device> device);
 

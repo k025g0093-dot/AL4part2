@@ -28,7 +28,12 @@ struct Emitter
 	float frequencyTime{};
 };
 
+struct AccelerationField {
 
+	Vector3 acceleration;
+	
+
+};
 
 class ParticleEmitter
 {
