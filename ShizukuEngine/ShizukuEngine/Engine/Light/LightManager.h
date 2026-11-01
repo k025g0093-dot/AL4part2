@@ -14,6 +14,7 @@ struct LightData {
     float distance;//ライトの届く距離
     float decay;//ライトの減衰率
     float cosAngle;//スポットライトの角度（余弦）
+	float cosFalloff;//スポットライトの減衰角度（余弦）
 };
 
 class LightManager {

@@ -121,14 +121,15 @@ PixelShaderOutput main(VertexShaderOutput input)
                 attenuation = saturate(1.0f - (dist * dist) / (range * range));
                 attenuation *= attenuation;
                         
+                
                 float3 spotDirection = normalize(light.direction); // スポットライトの方向を正規化
                 float cosAngle = dot(toLight, spotDirection);
                        
                         // スポットライトの角度による減衰を計算
-                float falloffFactor = saturate((cosAngle - light.cosAngle) / max(1.0f - light.cosAngle, 0.0001f));
+                float falloffFactor = saturate((cosAngle - light.cosAngle) / max(light.cosFalloffStart - light.cosAngle, 0.0001f));
                 attenuation *= falloffFactor;
             }
-
+            
             float NdotL = dot(normal, lightDir);
             float halfLambert = pow(NdotL * 0.5f + 0.5f, 2.0f);
 

@@ -48,7 +48,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 			engine->Update();
 
-			modelRotateY += 0.1f;
+			modelRotateY = 0.0f;
 
 			engine->PreDraw();
 
