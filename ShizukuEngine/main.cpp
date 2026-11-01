@@ -38,15 +38,6 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//モデルを回して立体感を確認する用
 	float modelRotateY = 0.0f;
 
-	Emitter emitter{};
-	emitter.position = { 0.0f, 2.0f, 0.0f };
-	emitter.count = 3;
-	emitter.velocityRange = { 10.0f, 10.0f, 10.0f };
-	emitter.frequency = 0.5f;
-	engine->CreateEmitter(emitter, particle,true);
-	engine->CreateAccelerationField({ {0.0f, -9.8f, 0.0f}, {{-10.0f, -10.0f, -10.0f}, {10.0f, 10.0f, 10.0f}} }, 0);
-
-
 	MSG msg{};
 	while (msg.message != WM_QUIT) {
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {

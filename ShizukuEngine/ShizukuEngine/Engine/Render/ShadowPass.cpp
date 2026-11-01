@@ -56,7 +56,7 @@ void ShadowPass::End(ID3D12GraphicsCommandList* cmd) {
 
 void ShadowPass::Update(const LightData& light)
 {
-	Vector3 lightDir = light.dirOrPos.Normalized();
+	Vector3 lightDir = light.direction.Normalized();
 	Vector3 lightPos = lightDir * -50.0f;
 
 	Vector3 up = { 0.0f, 1.0f, 0.0f };

@@ -2,14 +2,19 @@
 #include <d3d12.h>
 #include <wrl.h>
 #include "Allinclude/allVector.h"
-
+#include <numbers>
 using Microsoft::WRL::ComPtr;
 
 struct LightData {
-    Vector3 dirOrPos;//向きを表すポジション
-    int type;//ライトのタイプ
+    Vector3 direction;//向き
+    Vector3 position;//ライトの位置
     Vector4 color;//ライトの色
-    float intensity;//数
+    int type;//ライトのタイプ
+    float intensity;//光度
+    float distance;//ライトの届く距離
+    float decay;//ライトの減衰率
+    float cosAngle;//スポットライトの角度（余弦）
+	float cosFalloff;//スポットライトの減衰角度（余弦）
 };
 
 class LightManager {
@@ -32,7 +37,11 @@ public:
     void SetSelectedLight(int index) { mSelectedLightIndex = index; }
     int GetSelectedLight() const { return mSelectedLightIndex; }
 
-    int AddLight();
+    int AddPointLight();
+    int AddSpotLight();
+
+    int AllocateLightSlot();
+
     void RemoveLight(int index);
     bool IsLightActive(int index){return mLightActive[index];}
 

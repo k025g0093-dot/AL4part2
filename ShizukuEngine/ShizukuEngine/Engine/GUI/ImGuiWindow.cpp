@@ -80,6 +80,8 @@ void ImGuiDebugWindow::Update(const DebugStats& stats) {
 	mHistoryOffset = (mHistoryOffset + 1) % kHistoryCount;
 
 	if (begin("デバッグ")) {
+
+
 		//---------- パフォーマンス ----------
 		if (ImGui::CollapsingHeader("パフォーマンス", ImGuiTreeNodeFlags_DefaultOpen)) {
 			ImGui::Text("FPS : %.1f (%.2f ms)", io.Framerate, 1000.0f / io.Framerate);
@@ -138,7 +140,7 @@ void ImGuiLightManagerWindow::update(LightManager* lm) {
 			LightData global = lm->GetLight(0);
 			bool changed = false;
 			changed |= ImGui::ColorEdit4("色", &global.color.x);
-			changed |= ImGui::DragFloat3("方向", &global.dirOrPos.x, 0.01f, -1.0f, 1.0f);
+			changed |= ImGui::DragFloat3("方向", &global.direction.x, 0.01f, -1.0f, 1.0f);
 			changed |= ImGui::DragFloat("強度", &global.intensity, 0.01f, 0.0f, 10.0f);
 			if (changed) lm->SetLight(0, global);
 		}
@@ -152,14 +154,30 @@ void ImGuiLightManagerWindow::update(LightManager* lm) {
 			if (!lm->IsLightActive(i)) continue;
 
 			ImGui::PushID(i);
-			std::string label = "ポイントライト " + std::to_string(i);
+			std::string label{};
+			if (lm->GetLight(i).type == 1)
+			{
+				label = "ポイントライト " + std::to_string(i);
+			}
+			else {
+				label = "スポットライト " + std::to_string(i);
+			}
 
 			if (ImGui::CollapsingHeader(label.c_str())) {
-				LightData point = lm->GetLight(i);
+				LightData light = lm->GetLight(i);
 				bool changed = false;
-				changed |= ImGui::ColorEdit4("色", &point.color.x);
-				changed |= ImGui::DragFloat3("位置", &point.dirOrPos.x, 0.1f);
-				changed |= ImGui::DragFloat("強度", &point.intensity, 0.01f, 0.0f, 10.0f);
+				changed |= ImGui::ColorEdit4("色", &light.color.x);
+				changed |= ImGui::DragFloat3("位置", &light.position.x, 0.1f);
+				changed |= ImGui::DragFloat("強度", &light.intensity, 0.01f, 0.0f, 10.0f);
+
+
+				if (lm->GetLight(i).type == 2) {
+					changed |= ImGui::DragFloat3("向き", &light.direction.x, 0.01f, -1.0f, 1.0f);
+					changed |= ImGui::DragFloat("範囲", &light.distance, 0.1f, 0.1f, 100.0f);
+					changed |= ImGui::DragFloat("減衰率", &light.decay, 0.01f, 0.0f, 10.0f);
+		
+					changed |= ImGui::SliderAngle("スポットライト角度", &light.cosAngle, 1.0f, 89.0f);
+				}
 
 				if (ImGui::Button("ギズモで選択")) {
 					lm->SetSelectedLight(i);
@@ -172,27 +190,40 @@ void ImGuiLightManagerWindow::update(LightManager* lm) {
 				}
 
 				if (changed) {
-					point.type = 1;
-					lm->SetLight(i, point);
+					lm->SetLight(i, light);
 				}
+
 			}
 			ImGui::PopID();
 		}
 
 		ImGui::Dummy(ImVec2(0.0f, 8.0f));
 
-		// --- 追加ボタン ---
-		if (ImGui::Button("+ ポイントライト追加")) {
-			int newIndex = lm->AddLight();
-			if (newIndex == -1) {
-				ImGui::OpenPopup("LightFullPopup");
+		ImGui::Combo("ライトの追加", &mNewLightType, "ポイントライト\0スポットライト\0"); {
+
+			// --- 追加ボタン ---
+			if (ImGui::Button("+ ライト追加")) {
+
+				if (mNewLightType == 0) {
+					int newIndex = lm->AddPointLight();
+					if (newIndex == -1) {
+						ImGui::OpenPopup("LightFullPopup");
+					}
+				}
+				else {
+					int newIndex = lm->AddSpotLight();
+					if (newIndex == -1) {
+						ImGui::OpenPopup("LightFullPopup");
+					}
+				}
+
+
+			}
+			if (ImGui::BeginPopup("LightFullPopup")) {
+				ImGui::Text("これ以上ライトを追加できません（上限: %d）", lm->maxLight - 1);
+				ImGui::EndPopup();
 			}
 		}
-		if (ImGui::BeginPopup("LightFullPopup")) {
-			ImGui::Text("これ以上ライトを追加できません（上限: %d）", lm->maxLight - 1);
-			ImGui::EndPopup();
-		}
-
 
 	}
 	end();
