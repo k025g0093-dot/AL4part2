@@ -31,12 +31,17 @@ Particle ParticleEmitter::MakeNewParticle(
 		distribution(randomEngine) * emitter.velocityRange.z
 	};
 
-	particle.color = {
-		distColor(randomEngine),
-		distColor(randomEngine),
-		distColor(randomEngine),
-		1.0f
-	};
+	if (mIsFixedColor) {
+		particle.color = { 1.0f,1.0f,1.0f,1.0f };
+	}
+	else {
+		particle.color = {
+			distColor(randomEngine),
+			distColor(randomEngine),
+			distColor(randomEngine),
+			1.0f
+		};
+	}
 
 	particle.lifeTime = distTime(randomEngine);
 	particle.currentTime = 0;
@@ -69,6 +74,10 @@ void ParticleEmitter::Update(float timer) {
 			continue;
 		}
 
+		if(IsAABBToPointCollision(accelerationField.area,particleIterator->position)) {
+			particleIterator->velocity += accelerationField.acceleration * timer;
+		}
+
 		particleIterator->position += particleIterator->velocity*timer;
 
 		particleIterator->currentTime += timer;
@@ -78,11 +87,22 @@ void ParticleEmitter::Update(float timer) {
 	}
 }
 
-void ParticleEmitter::CreateEmitter(const Emitter& emitter) {
+void ParticleEmitter::CreateEmitter(const Emitter& emitter,bool isFixedColor) {
 	mEmitter = emitter;
+	mIsFixedColor = isFixedColor;
 	for (uint32_t count = 0; count < mEmitter.count; ++count) {
 		particles.push_back(
 			MakeNewParticle(mRandomEngine, mEmitter)
 		);
 	}
 }
+
+void ParticleEmitter::SetAccelerationField(const AccelerationField& field) {
+
+	accelerationField = field;
+	accelerationField.acceleration = { field.acceleration.x,field.acceleration.y,field.acceleration.z };
+	accelerationField.area.min = { field.area.min.x, field.area.min.y, field.area.min.z };
+	accelerationField.area.max = { field.area.max.x, field.area.max.y, field.area.max.z };
+}
+
+

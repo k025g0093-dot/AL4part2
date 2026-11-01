@@ -4,8 +4,9 @@
 #include <random>
 #include<list>
 #include "Allinclude/AllVector.h"
-#include "../Math/RandomEngine.h"
-#include"../DeltaTaime/Clock.h"
+#include "Math/RandomEngine.h"
+#include"DeltaTaime/Clock.h"
+#include "Math/AABB.h"
 
 struct Particle
 {
@@ -30,8 +31,9 @@ struct Emitter
 
 struct AccelerationField {
 
-	Vector3 acceleration;
-	
+	Vector3 acceleration;//加速度
+
+	AABB area;//加速度がかかる範囲
 
 };
 
@@ -42,7 +44,9 @@ public:
 	ParticleEmitter();
 	~ParticleEmitter();
 
-	void CreateEmitter(const Emitter&emitter);
+	void CreateEmitter(const Emitter&emitter,bool isFixedColor=false );
+
+	void SetAccelerationField(const AccelerationField&field);
 
 	void Update(float timer);
 
@@ -54,9 +58,11 @@ private://プライベート関数
 
 private://プライベート変数
 
+	bool mIsFixedColor = false;
+
 	std::list<Particle>particles;
 	std::mt19937 mRandomEngine;
 	Emitter mEmitter;
-
+	AccelerationField accelerationField;
 };
 

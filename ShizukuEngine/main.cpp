@@ -43,7 +43,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	emitter.count = 3;
 	emitter.velocityRange = { 10.0f, 10.0f, 10.0f };
 	emitter.frequency = 0.01f;
-	engine->CreateEmitter(emitter, particle);
+	engine->CreateEmitter(emitter, particle,true);
+	engine->CreateAccelerationField({ {0.0f, -9.8f, 0.0f}, {{-10.0f, -10.0f, -10.0f}, {10.0f, 10.0f, 10.0f}} }, 0);
+
 
 	MSG msg{};
 	while (msg.message != WM_QUIT) {

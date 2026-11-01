@@ -179,6 +179,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ShizukuEngine\Engine\DeltaTaime\Clock.h" />
+    <ClInclude Include="ShizukuEngine\Engine\Math\AABB.h" />
     <ClInclude Include="ShizukuEngine\Engine\Math\RandomEngine.h" />
     <ClInclude Include="ShizukuEngine\Engine\Particle\ParticleEmitter.h" />
     <ClInclude Include="ShizukuEngine\Engine\Model\3DAnimation\AssimpGLMHelpersMath\GlmConvert.h" />
