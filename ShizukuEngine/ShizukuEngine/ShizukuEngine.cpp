@@ -80,15 +80,25 @@ int ShizukuEngine::LoadModel(const std::string& filePath) {
 	return mModelManager.Load(filePath);
 }
 
-int ShizukuEngine::CreateEmitter(const Emitter& emitter, int modelIndex) {
+int ShizukuEngine::CreateEmitter(const Emitter& emitter, int modelIndex,bool isFixedColor) {
 
 	auto particleEmitter = std::make_unique<ParticleEmitter>();
-	particleEmitter->CreateEmitter(emitter);
+	particleEmitter->CreateEmitter(emitter,isFixedColor);
 
 	mEmitters.push_back({ std::move(particleEmitter),modelIndex });
 	return static_cast<int>(mEmitters.size()) - 1;
-
 }
+
+
+int ShizukuEngine::CreateAccelerationField(const AccelerationField& field, int emitterIndex) {
+	if (emitterIndex < 0 || emitterIndex >= mEmitters.size()) {
+		return -1; // 無効なインデックスの場合はエラーコードを返す
+	}
+	mEmitters[emitterIndex].emitter->SetAccelerationField(field);
+	return 0; // 成功
+}
+
+
 
 void ShizukuEngine::Update() {
 
@@ -97,6 +107,7 @@ void ShizukuEngine::Update() {
 
 	for (EmitterSlot& slot : mEmitters) {
 		slot.emitter->Update(deltaTime);
+		
 	}
 
 }

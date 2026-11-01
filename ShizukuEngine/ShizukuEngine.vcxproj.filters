@@ -308,6 +308,9 @@
     <ClInclude Include="ShizukuEngine\Engine\DeltaTaime\Clock.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="ShizukuEngine\Engine\Math\AABB.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include=".editoroconfig">

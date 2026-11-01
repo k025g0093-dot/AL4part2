@@ -42,8 +42,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	emitter.position = { 0.0f, 2.0f, 0.0f };
 	emitter.count = 3;
 	emitter.velocityRange = { 10.0f, 10.0f, 10.0f };
-	emitter.frequency = 0.01f;
-	engine->CreateEmitter(emitter, particle);
+	emitter.frequency = 0.5f;
+	engine->CreateEmitter(emitter, particle,true);
+	engine->CreateAccelerationField({ {0.0f, -9.8f, 0.0f}, {{-10.0f, -10.0f, -10.0f}, {10.0f, 10.0f, 10.0f}} }, 0);
+
 
 	MSG msg{};
 	while (msg.message != WM_QUIT) {
@@ -84,7 +86,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 				engine->DrawSphere({ pos.x + 6.0f + 0.1f * i, pos.y + 0.1f * i, pos.z + 2.0f * i }, { 1,1,1 }, { 1,1,1 }, { 1,1,1,1 }, tex);
 			}
 
-			engine->DrawSprite({ 100.0f, 100.0f }, 0.0f, 256.0f, 256.0f, { 1,1,1,1 }, tex);
+			//engine->DrawSprite({ 100.0f, 100.0f }, 0.0f, 256.0f, 256.0f, { 1,1,1,1 }, tex);
 
 			engine->PostDraw();
 		}

@@ -1,11 +1,13 @@
 #pragma once
-#include <DirectXMath.h>
 #include <cmath>
 
-struct Vector3 : public DirectX::XMFLOAT3 {
+struct Vector3 {
+    float x;
+    float y;
+    float z;
+
     // コンストラクタ
-    Vector3(float _x = 0, float _y = 0, float _z = 0) : XMFLOAT3(_x, _y, _z) {}
-    Vector3(const DirectX::XMFLOAT3& f) : XMFLOAT3(f.x, f.y, f.z) {}
+    Vector3(float _x = 0, float _y = 0, float _z = 0) : x(_x), y(_y), z(_z) {}
 
     // 基本計算（オーバーロード）
     Vector3 operator+(const Vector3& v) const { return Vector3(x + v.x, y + v.y, z + v.z); }
