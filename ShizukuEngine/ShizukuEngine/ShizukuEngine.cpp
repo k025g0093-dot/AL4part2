@@ -46,7 +46,11 @@ void ShizukuEngine::Initialize( int width,int Height) {
 
 	//レンダーリクエストの初期化
 	mRenderRequests.CreateOrthographicMatrix(width, Height);
-	mRenderRequests.InitRender(mDX12Context.GetDevice(),&mTextureManager,&mLightManager);
+	mRenderRequests.InitRender(
+		mDX12Context.GetDevice(),
+		&mTextureManager,
+		&mLightManager,
+		&mDX12Context);
 
 	//ImGuiの初期化
 	mImGuiManager.Initialize(
@@ -76,7 +80,37 @@ int ShizukuEngine::LoadModel(const std::string& filePath) {
 	return mModelManager.Load(filePath);
 }
 
-void ShizukuEngine::Update() {}
+int ShizukuEngine::CreateEmitter(const Emitter& emitter, int modelIndex,bool isFixedColor) {
+
+	auto particleEmitter = std::make_unique<ParticleEmitter>();
+	particleEmitter->CreateEmitter(emitter,isFixedColor);
+
+	mEmitters.push_back({ std::move(particleEmitter),modelIndex });
+	return static_cast<int>(mEmitters.size()) - 1;
+}
+
+
+int ShizukuEngine::CreateAccelerationField(const AccelerationField& field, int emitterIndex) {
+	if (emitterIndex < 0 || emitterIndex >= mEmitters.size()) {
+		return -1; // 無効なインデックスの場合はエラーコードを返す
+	}
+	mEmitters[emitterIndex].emitter->SetAccelerationField(field);
+	return 0; // 成功
+}
+
+
+
+void ShizukuEngine::Update() {
+
+	mClock.Update();
+	const float deltaTime = mClock.GetDeltaTime();
+
+	for (EmitterSlot& slot : mEmitters) {
+		slot.emitter->Update(deltaTime);
+		
+	}
+
+}
 
 //開放処理
 ShizukuEngine::~ShizukuEngine() {}
@@ -91,20 +125,31 @@ void ShizukuEngine::PreDraw()
 void ShizukuEngine::PostDraw() 
 {
 
+	DrawEmitter();
 
 	//ライトのGUI（ImGuiのフレーム中に呼ぶ）
 	mLightWindow.update(&mLightManager);
 	mCameraWindow.update(&mCamera);
 	mModelWindow.update(&mModelManager);
 
+	DebugStats stats{};
+	//stats.drawRequestCount = mRenderRequests.GetLastRequestCount();
+	//stats.drawCallCount = mRenderRequests.GetLastDrawCallCount();
+	stats.textureCount = mTextureManager.GetTextureCount();
+	stats.modelCount = mModelManager.GetModelCount();
+	stats.lightCount = mLightManager.GetActiveLightCount();
+	mDebugWindow.Update(stats);
+
 	Matrix4x4 view = mCamera.GetViewMatrix();
 	Matrix4x4 proj = mCamera.GetProjectionMatrix((float)mWidth, (float)mHeight);
 	mViewProjectionMatrix = Multiply(view, proj);
 	Vector3 cameraTranslate = mCamera.transform.translate;
+	Matrix4x4 billBoard = mCamera.GetBillboardMatrix();
 	mRenderRequests.RenderAllRequests(
 		mDX12Context.GetCommandList(),
 		mViewProjectionMatrix,
-		cameraTranslate
+		cameraTranslate,
+		billBoard
 	);
 
 	mDX12Context.SetImGuiRenderTarget();
@@ -115,6 +160,8 @@ void ShizukuEngine::PostDraw()
 	mImGuiManager.RenderPlatformWindows();
 
 }
+
+#pragma region 三角形描画関数
 
 void ShizukuEngine::DrawTriangle
 (
@@ -138,7 +185,9 @@ void ShizukuEngine::DrawTriangle
 	req.isMesh = false;//メッシュかの確認
 	mRenderRequests.DrawRequestsSubmission(req);
 }
+#pragma endregion
 
+#pragma region 球体描画関数
 
 void ShizukuEngine::DrawSphere
 (
@@ -163,7 +212,9 @@ void ShizukuEngine::DrawSphere
 	req.isMesh = false;//メッシュかの確認
 	mRenderRequests.DrawRequestsSubmission(req);
 }
+#pragma endregion
 
+#pragma region 画像描画関数
 
 void ShizukuEngine::DrawSprite
 (
@@ -190,6 +241,10 @@ void ShizukuEngine::DrawSprite
 	req.isSprit = true;
 	mRenderRequests.DrawRequestsSubmission(req);
 }
+#pragma endregion
+
+#pragma region 3Dモデル描画関数
+
 
 void ShizukuEngine::DrawModel
 (
@@ -218,3 +273,59 @@ void ShizukuEngine::DrawModel
 	}
 	mRenderRequests.DrawRequestsSubmission(req);
 }
+#pragma endregion
+
+#pragma region パーティクル用モデル描画関数
+
+
+void ShizukuEngine::DrawModelParticle
+(
+	int modelIndex,
+	const Vector3& pos,
+	const Vector3& rot,
+	const Vector3& scale,
+	const Vector4 color,
+	int textureIndx
+) {
+	//番号からモデルを借りる（読み込み失敗の-1や範囲外ならnullptrが返る）
+	MeshModel* model = mModelManager.Get(modelIndex);
+	if (!model) { return; }
+
+	DrawRequest req;
+	req.model = model;
+	req.pos = pos;//位置を渡す
+	req.rot = rot;//回転度を渡す
+	req.scale = scale;//スケールを渡す
+	req.color = color;//色を渡す
+	req.isParticle = true;
+	if(textureIndx==-1){
+		req.textureIndex = model->GetTextureIndex();
+	}
+	else {
+		req.textureIndex = textureIndx;//テクスチャのインデックスを渡す
+	}
+	mRenderRequests.DrawRequestsSubmission(req);
+}
+#pragma endregion
+
+#pragma region パーティクル用モデル描画関数
+
+void ShizukuEngine::DrawEmitter() 
+{
+
+	for (const EmitterSlot& slot : mEmitters) {
+		for (const Particle& particle : slot.emitter->GetParticles()) {
+
+			DrawModelParticle(
+
+				slot.modelIndex,
+				particle.position,
+				particle.rotate,
+				particle.scale,
+				particle.color
+
+			);
+		}
+	}
+}
+#pragma endregion

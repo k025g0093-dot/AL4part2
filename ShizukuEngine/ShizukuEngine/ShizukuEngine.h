@@ -1,27 +1,29 @@
 #pragma once
 //ウィンドウアプリなどの作成ヘッダ
-#include "WinApp.h"
-#include "DXGI.h"
-#include "DX12Context.h"
-#include "RenderRequests.h"
+#include "Core/WinApp.h"
+#include "DirectX/DX12Context.h"
+#include "Render/RenderRequests.h"
 
-#include "LogSistem.h"
-#include "DebugLayer.h"
-#include "Camera.h"
+#include "Core/LogSistem.h"
+#include "DirectX/DebugLayer.h"
+#include "Camera/Camera.h"
 
 //マネジャクラス
-#include "TextureManager.h"
-#include "LightManager.h"
-#include "ModelManager.h"
+#include "TextureManager/TextureManager.h"
+#include "Light/LightManager.h"
+#include "Model/ModelManager.h"
 
-#include "ImGuiManager.h"
-#include "ImGuiWindow.h"
+#include "GUI/ImGuiManager.h"
+#include "GUI/ImGuiWindow.h"
 
 
 //各種図形の関数が入ったヘッダ
-#include"TriangleModel.h"
-#include "Sprite.h"
-#include "Sphere.h"
+#include"Model/Primitive/TriangleModel.h"
+#include "Model/Sprite/Sprite.h"
+#include "Model/Primitive/Sphere.h"
+
+#include "Particle/ParticleEmitter.h"
+#include "DeltaTaime/Clock.h"
 
 //ComPtr地獄だっきゃくのために必要
 using Microsoft::WRL::ComPtr;
@@ -63,6 +65,21 @@ public:
 	//--------------------------------------------------------------
 	int LoadModel(const std::string& filePath);
 
+	//--------------------------------------------------------------
+	//パーティクルのフィールド作成関数
+	//--------------------------------------------------------------
+
+	int CreateAccelerationField(const AccelerationField& field, int emitterIndex);
+
+	//--------------------------------------------------------------
+	//エミッターの作成関数（引数はエミッターの情報とモデルの番号）
+	// 色の固定ができますデフォルトはランダムが指定されています
+	//--------------------------------------------------------------
+	int CreateEmitter(const Emitter& emitter, int modelIndex,bool isFixedColor=false );
+
+
+	//-----------------------------------描画関数-----------------------------------//
+
 
 	//--------------------------------------------------------------
 	//三角形の描画関数（引数は、位置、回転、スケール、色、テクスチャです）
@@ -80,17 +97,21 @@ public:
 	void DrawSprite(const Vector2& pos, const float& rot, const float& width, const float& height, const Vector4 color, int textureIndx);
 
 	//--------------------------------------------------------------
-	//スプライトの描画関数（引数は、左上を起点に下位置、回転、スケール、色、テクスチャです）
+	//モデルの描画関数（引数は、モデル番号、位置、回転、スケール、色、テクスチャです）テクスチャは宣言をしなくても平気です
 	//--------------------------------------------------------------
+	void DrawModel(int modelIndex, const Vector3& pos, const Vector3& rot, const Vector3& scale, const Vector4 color, int textureIndx = -1);
+
 	//--------------------------------------------------------------
 	//モデルの描画関数（引数は、モデル番号、位置、回転、スケール、色、テクスチャです）テクスチャは宣言をしなくても平気です
 	//--------------------------------------------------------------
-	void DrawModel(int modelIndex, const Vector3& pos, const Vector3& rot, const Vector3& scale, const Vector4 color, int textureIndx =-1);
+	void DrawModelParticle(int modelIndex, const Vector3& pos, const Vector3& rot, const Vector3& scale, const Vector4 color, int textureIndx = -1);
 
 private://ヘルパー関数など内部関数がメイン
 
 	//ヘルパー関数
 	const Matrix4x4& GetViewProjectionMatrix() const { return mViewProjectionMatrix; }
+
+	void DrawEmitter();
 
 
 
@@ -109,12 +130,25 @@ private://各種変数などの初期化
 	ImGuiModelWindow mModelWindow{};//モデルの色を操作するGUI（確認用）
 	ModelManager mModelManager{};
 
+	ImGuiDebugWindow mDebugWindow{};//デバック情報を載せたGUI
+
 	static ShizukuEngine* mInstance;
 
 
 	std::unique_ptr<TriangleModel> mTriangleModel;
 	std::unique_ptr<Sphere> mSphereModel;
 	std::unique_ptr<Sprite> mSprite;
+
+	struct EmitterSlot {	
+		std::unique_ptr<ParticleEmitter> emitter;
+		int modelIndex = -1;//初期値として何もない場合は出さない
+	};
+
+	std::vector<EmitterSlot>mEmitters;
+
+
+	//デルタタイマーを取得するため
+	Clock mClock;
 
 	Matrix4x4 mViewProjectionMatrix;
 	int mHeight;

@@ -29,13 +29,23 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 	//---------- 読み込み ----------
 	int tex = engine->LoadTexture("resources/uvChecker.png");
-	int model = engine->LoadModel("resources/bunny.obj");//失敗したら-1（DrawModelは何もしない）
+	int model = engine->LoadModel("resources/fbx/Dragon 2.5_fbx.fbx");//失敗したら-1（DrawModelは何もしない）
+	int terrain = engine->LoadModel("resources/terrain/terrain.obj");
+	int particle = engine->LoadModel("resources/plane.obj");
 
-
-	Vector3 pos{0,0,0};
+	Vector3 pos{ 0,0,0 };
 
 	//モデルを回して立体感を確認する用
 	float modelRotateY = 0.0f;
+
+	Emitter emitter{};
+	emitter.position = { 0.0f, 2.0f, 0.0f };
+	emitter.count = 3;
+	emitter.velocityRange = { 10.0f, 10.0f, 10.0f };
+	emitter.frequency = 0.5f;
+	engine->CreateEmitter(emitter, particle,true);
+	engine->CreateAccelerationField({ {0.0f, -9.8f, 0.0f}, {{-10.0f, -10.0f, -10.0f}, {10.0f, 10.0f, 10.0f}} }, 0);
+
 
 	MSG msg{};
 	while (msg.message != WM_QUIT) {
@@ -56,9 +66,19 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 				model,
 				{ 0.0f, 0.0f, 0.0f },
 				{ 0.0f, modelRotateY, 0.0f },
+				{ 1.0f, 1.0f, 1.0f },
+				{ 1.0f, 1.0f, 1.0f, 1.0f }
+			);
+
+			engine->DrawModel(
+				terrain,
+				{ 0.0f, -2.0f, 0.0f },
+				{ 0.0f, modelRotateY, 0.0f },
 				{ 2.0f, 2.0f, 2.0f },
 				{ 1.0f, 1.0f, 1.0f, 1.0f }
 			);
+
+
 
 			//---------- 今までの図形（モデルと重ならないよう横にずらす） ----------
 			for (int i = 0; i < 10; i++) {
@@ -66,7 +86,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 				engine->DrawSphere({ pos.x + 6.0f + 0.1f * i, pos.y + 0.1f * i, pos.z + 2.0f * i }, { 1,1,1 }, { 1,1,1 }, { 1,1,1,1 }, tex);
 			}
 
-			engine->DrawSprite({ 100.0f, 100.0f }, 0.0f, 256.0f, 256.0f, { 1,1,1,1 }, tex);
+			//engine->DrawSprite({ 100.0f, 100.0f }, 0.0f, 256.0f, 256.0f, { 1,1,1,1 }, tex);
 
 			engine->PostDraw();
 		}

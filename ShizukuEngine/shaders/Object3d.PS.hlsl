@@ -27,8 +27,12 @@ struct PixelShaderOutput
 
 Texture2D<float32_t4> gTexture : register(t0);
 Texture2D<float32_t4> gNormalTexture : register(t1);
+Texture2D<float> shadowMap : register(t4);
 SamplerState gSampler : register(s0);
 ConstantBuffer<Camera> gCamera : register(b2);
+
+
+SamplerComparisonState gSampler1 : register(s1);
 
 static const uint LIGHT_COUNT = 8;
 
@@ -49,10 +53,6 @@ PixelShaderOutput main(VertexShaderOutput input)
       }
 
       if (textureColor.a == 0.0f)
-      {
-            discard;
-      }
-      if (output.color.a == 0.0f)
       {
             discard;
       }
@@ -123,12 +123,29 @@ PixelShaderOutput main(VertexShaderOutput input)
                   finalColor += diffuse + specular;
             }
 
-            output.color = finalColor;
-            output.color.a = gMaterial.color.a * textureColor.a;
+            float shadowFactor = 1.0f;
+
+            float4 posInLightSpace = mul(float4(input.worldPosition, 1.0f), gLightVP);
+            posInLightSpace.xyz /= posInLightSpace.w;
+            float2 shadowUV = float2(
+                         (posInLightSpace.x + 1.0f) * 0.5f,
+                          (1.0f - posInLightSpace.y) * 0.5f
+                   );
+            
+            float lit = shadowMap.SampleCmpLevelZero(gSampler1, shadowUV, posInLightSpace.z - 0.005f);
+            shadowFactor = lerp(0.5f, 1.0f, lit);
+            
+            output.color.rgb = finalColor.rgb * shadowFactor;
+            output.color.a = input.color.a * textureColor.a;
       }
       else
       {
-            output.color = gMaterial.color * textureColor;
+            output.color = input.color * textureColor;
+      }
+      
+      if (output.color.a == 0.0f)
+      {
+            discard;
       }
 
       return output;
