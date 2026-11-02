@@ -2,7 +2,10 @@
 #include <d3d12.h>
 #include <wrl.h>
 #include "Allinclude/allVector.h"
+#include "externals/nlohmann/json.hpp"
 #include <numbers>
+
+using json = nlohmann::json;
 using Microsoft::WRL::ComPtr;
 
 struct LightData {
@@ -45,9 +48,11 @@ public:
     void RemoveLight(int index);
     bool IsLightActive(int index){return mLightActive[index];}
 
+    void SaveLightsToFile();
 
 private://プライベート関数
     void Upload();
+    void LoadLightsFromFile();
 
 private://メンバ変数
 
