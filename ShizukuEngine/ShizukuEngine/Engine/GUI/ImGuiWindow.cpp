@@ -124,10 +124,9 @@ void ImGuiLightManagerWindow::update(LightManager* lm) {
 
 		//メニューバー
 		if (ImGui::BeginMenuBar()) {
-			if (ImGui::BeginMenu("ファイル")) {
-				if (ImGui::MenuItem("保存")) {
-					//ここでいろいろなライトの保存の実装だったりを行います
-					//ModelManager::GetInstance()->SaveToFile();
+			if (ImGui::BeginMenu("ライトファイル")) {
+				if (ImGui::MenuItem("現在のライトの値を保存")) {
+					lm->SaveLightsToFile();
 				}
 				ImGui::EndMenu();
 			}

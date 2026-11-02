@@ -29,6 +29,7 @@ void LightManager::Initialize(ComPtr<ID3D12Device> device) {
 	srvDesc.Buffer.NumElements = maxLight;
 	srvDesc.Buffer.StructureByteStride = sizeof(LightData);
 
+	LoadLightsFromFile();
 
 	Upload();
 }
@@ -125,4 +126,51 @@ void LightManager::RemoveLight(int index) {
 	mActiveLightCount = lastActive + 1;
 
 	Upload();
+}
+
+void LightManager::LoadLightsFromFile() {
+	std::ifstream file("resources/sceneData/lightsData.json");
+	if (file.is_open()) {
+	
+		json Data = json::parse(file, nullptr, false);
+		for (int i = 0; i < Data["lights"].size(); i++) {
+		
+			mLights[i].direction = { Data["lights"][i]["direction"][0], Data["lights"][i]["direction"][1], Data["lights"][i]["direction"][2] };
+			mLights[i].position = { Data["lights"][i]["position"][0], Data["lights"][i]["position"][1], Data["lights"][i]["position"][2] };
+			mLights[i].color = { Data["lights"][i]["color"][0], Data["lights"][i]["color"][1], Data["lights"][i]["color"][2], Data["lights"][i]["color"][3] };
+			mLights[i].type = Data["lights"][i]["type"];
+			mLights[i].intensity = Data["lights"][i]["intensity"];
+			mLights[i].distance = Data["lights"][i]["distance"];
+			mLights[i].decay = Data["lights"][i]["decay"];
+			mLights[i].cosAngle = Data["lights"][i]["cosAngle"];
+			mLights[i].cosFalloff = Data["lights"][i]["cosFalloff"];
+			mLightActive[i] = true;
+			mActiveLightCount = 1 + i;
+		}
+	
+	}
+}
+void LightManager::SaveLightsToFile() {
+
+	json data;
+	data["lights"] = json::array();
+
+	for (int i = 0; i < maxLight; i++) {
+		if (!mLightActive[i]) continue;
+
+		json lightData;
+		lightData["direction"] = { mLights[i].direction.x, mLights[i].direction.y, mLights[i].direction.z };
+		lightData["position"] = { mLights[i].position.x, mLights[i].position.y, mLights[i].position.z };
+		lightData["color"] = { mLights[i].color.x, mLights[i].color.y, mLights[i].color.z, mLights[i].color.w };
+		lightData["type"] = mLights[i].type;
+		lightData["intensity"] = mLights[i].intensity;
+		lightData["distance"] = mLights[i].distance;
+		lightData["decay"] = mLights[i].decay;
+		lightData["cosAngle"] = mLights[i].cosAngle;
+		lightData["cosFalloff"] = mLights[i].cosFalloff;
+
+		data["lights"].push_back(lightData);
+	}
+	std::ofstream file("resources/sceneData/lightsData.json");
+	file << data.dump(4);
 }
