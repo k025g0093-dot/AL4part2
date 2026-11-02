@@ -215,8 +215,6 @@ void ImGuiLightManagerWindow::update(LightManager* lm) {
 						ImGui::OpenPopup("LightFullPopup");
 					}
 				}
-
-
 			}
 			if (ImGui::BeginPopup("LightFullPopup")) {
 				ImGui::Text("これ以上ライトを追加できません（上限: %d）", lm->maxLight - 1);

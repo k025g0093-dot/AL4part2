@@ -123,7 +123,7 @@ PixelShaderOutput main(VertexShaderOutput input)
                         
                 
                 float3 spotDirection = normalize(light.direction); // スポットライトの方向を正規化
-                float cosAngle = dot(toLight, spotDirection);
+                float cosAngle = dot(normalize(-lightDir), spotDirection);
                        
                         // スポットライトの角度による減衰を計算
                 float falloffFactor = saturate((cosAngle - light.cosAngle) / max(light.cosFalloffStart - light.cosAngle, 0.0001f));
