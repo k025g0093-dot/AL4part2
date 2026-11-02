@@ -171,7 +171,7 @@ void ImGuiLightManagerWindow::update(LightManager* lm) {
 
 
 				if (lm->GetLight(i).type == 2) {
-					changed |= ImGui::DragFloat3("向き", &light.direction.x, 0.01f, -1.0f, 1.0f);
+					changed |= ImGui::DragFloat3("向き", &light.direction.x, 0.01f, -1.0f, 2.0f);
 					changed |= ImGui::DragFloat("範囲", &light.distance, 0.1f, 0.1f, 100.0f);
 					changed |= ImGui::DragFloat("減衰率", &light.decay, 0.01f, 0.0f, 10.0f);
 		
