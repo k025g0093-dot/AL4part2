@@ -145,6 +145,8 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ShizukuEngine\Engine\DirectX\DescriptorHeap.cpp" />
+    <ClCompile Include="ShizukuEngine\Engine\Render\RenderTexture.cpp" />
     <ClCompile Include="ShizukuEngine\Engine\DeltaTaime\Clock.cpp" />
     <ClCompile Include="ShizukuEngine\Engine\Math\RandomEngine.cpp" />
     <ClCompile Include="ShizukuEngine\Engine\Particle\ParticleEmitter.cpp" />
@@ -178,6 +180,8 @@
     <ClCompile Include="ShizukuEngine\Engine\Model\3DAnimation\SkinnedModel.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ShizukuEngine\Engine\DirectX\DescriptorHeap.h" />
+    <ClInclude Include="ShizukuEngine\Engine\Render\RenderTexture.h" />
     <ClInclude Include="ShizukuEngine\Engine\DeltaTaime\Clock.h" />
     <ClInclude Include="ShizukuEngine\Engine\Math\AABB.h" />
     <ClInclude Include="ShizukuEngine\Engine\Math\RandomEngine.h" />
