@@ -88,9 +88,9 @@ void DX12Context::CreateCommandObjects(
 	);
 	assert(SUCCEEDED(hr));
 
-	rtvDescriptorHeap = CreateDescriptorHeap(mDevice,D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 4, false);//GUIマルチビューポートで使用するため
+	rtvDescriptorHeap = CreateDescriptorHeap(mDevice.Get(), D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 4, false);//GUIマルチビューポートで使用するため
 
-	srvDescriptorHeap = CreateDescriptorHeap(mDevice,D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 128, true);
+	srvDescriptorHeap = CreateDescriptorHeap(mDevice.Get(), D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, 128, true);
 
 
 	hr = (swapChin->GetBuffer(0, IID_PPV_ARGS(&swapChainResources[0])));
@@ -243,7 +243,7 @@ ID3D12Resource* DX12Context::CreateDepthStencilTextureResource() {
 	assert(SUCCEEDED(hr));
 
 	dsvDescriptorHeap = CreateDescriptorHeap(
-		mDevice,
+		mDevice.Get(),
 		D3D12_DESCRIPTOR_HEAP_TYPE_DSV,
 		1,
 		false
