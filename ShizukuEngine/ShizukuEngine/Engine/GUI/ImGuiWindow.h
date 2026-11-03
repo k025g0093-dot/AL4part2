@@ -2,6 +2,7 @@
 #include "Core/ConvertString.h"
 #include "Light/LightManager.h"
 #include "Camera/Camera.h"
+#include "Render/RenderTexture.h"
 
 class ModelManager;
 #ifdef USE_IMGUI
@@ -84,16 +85,27 @@ public:
     void update(ModelManager* modelManager);
 };
 
+//GUIで操作をするウィンドウ
 class ImGuiViewportWindow : public ImGuiUIWindow
 {
 public:
-    void update() override;
+    void update(RenderTexture* RenderTexture);
+
+private:
+
+	RenderTexture* mRenderTexture = nullptr;
+
 };
 
+//実際のゲーム画面用のウィンドウ
 class ImGuiPlayViewportWindow : public ImGuiUIWindow
 {
 public:
-    void update() override;
+    void update(RenderTexture* RenderTexture);
+private:
+
+    RenderTexture* mRenderTexture = nullptr;
+
 };
 
 class ImGuiZmoWindow : public ImGuiUIWindow

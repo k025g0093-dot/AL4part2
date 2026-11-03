@@ -29,12 +29,18 @@ public:
 		int newWidth, int newHeight);
 
 	void  SetSceneRenderTarget(
-		ID3D12GraphicsCommandList* commandList,
-		DX12Context* dx12Context);
+		ID3D12GraphicsCommandList* commandList);
 
 	void ClearSceneRenderTarget(
-		ID3D12GraphicsCommandList* commandList,
-		DX12Context* dx12Context);
+		ID3D12GraphicsCommandList* commandList);
+
+	void TransitionToRenderTarget(
+		ID3D12GraphicsCommandList* commandList);
+
+	void TransitionToSrv(
+		ID3D12GraphicsCommandList* commandList);
+
+	D3D12_GPU_DESCRIPTOR_HANDLE GetSceneSrvGpuHandle() const { return mSceneSrvGpuHandle; }
 
 private://プライベート関数
 

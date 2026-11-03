@@ -122,7 +122,6 @@ void DX12Context::CreateCommandObjects(
 	}
 	InitFenceEvent();
 
-
 }
 
 //描画前のコマンドを集積

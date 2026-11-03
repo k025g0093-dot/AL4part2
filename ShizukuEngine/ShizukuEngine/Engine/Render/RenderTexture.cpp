@@ -16,7 +16,7 @@ void RenderTexture::CreateSceneRtv(
 	desc.Height = mHeight;
 	desc.MipLevels = 1;
 	desc.DepthOrArraySize = 1;
-	desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+	desc.Format = DXGI_FORMAT_R8G8B8A8_TYPELESS;
 	desc.SampleDesc.Count = 1;
 	desc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
 	desc.Flags = D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
@@ -26,9 +26,9 @@ void RenderTexture::CreateSceneRtv(
 
 	D3D12_CLEAR_VALUE clearValue{};
 	clearValue.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
-	clearValue.Color[0] = 0.05f;
-	clearValue.Color[1] = 0.12f;
-	clearValue.Color[2] = 0.25f;
+	clearValue.Color[0] = 0.1f;
+	clearValue.Color[1] = 0.25f;
+	clearValue.Color[2] = 0.5f;
 	clearValue.Color[3] = 1.0f;
 
 	mSceneRtvDescriptorHeap.Reset();
@@ -44,7 +44,10 @@ void RenderTexture::CreateSceneRtv(
 
 	mSceneRtvDescriptorHeap = CreateDescriptorHeap(device, D3D12_DESCRIPTOR_HEAP_TYPE_RTV, 1, false);
 	mSceneRtvHandle = mSceneRtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
-	device->CreateRenderTargetView(mSceneColorResource.Get(), nullptr, mSceneRtvHandle);
+	D3D12_RENDER_TARGET_VIEW_DESC rtvDesc{};
+	rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+	rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
+	device->CreateRenderTargetView(mSceneColorResource.Get(), &rtvDesc, mSceneRtvHandle);
 
 	mTextureManager = textureManager;
 
@@ -59,7 +62,7 @@ void RenderTexture::CreateSceneRtv(
 	_ASSERT_EXPR(mSceneSrvCpuHandle.ptr != 0, L"SRVのCPUハンドルが取得できませんでした");
 
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
-	srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+	srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 	srvDesc.Texture2D.MipLevels = 1;
@@ -145,16 +148,56 @@ void RenderTexture::ResizeSceneRenderTarget(
 }
 
 void RenderTexture::SetSceneRenderTarget(
-	ID3D12GraphicsCommandList* commandList,
-	DX12Context* dx12Context) {
+	ID3D12GraphicsCommandList* commandList) {
+
+	D3D12_VIEWPORT viewport{};
+	viewport.Width = static_cast<float>(mWidth);
+	viewport.Height = static_cast<float>(mHeight);
+	viewport.TopLeftX = 0;
+	viewport.TopLeftY = 0;
+	viewport.MinDepth = 0.0f;
+	viewport.MaxDepth = 1.0f;
+	commandList->RSSetViewports(1, &viewport);
+
+	D3D12_RECT scissorRect{};
+	scissorRect.left = 0;
+	scissorRect.right = static_cast<LONG>(mWidth);
+	scissorRect.top = 0;
+	scissorRect.bottom = static_cast<LONG>(mHeight);
+	commandList->RSSetScissorRects(1, &scissorRect);
+
 	commandList->OMSetRenderTargets(1, &mSceneRtvHandle, false, &mDsvHandle);
 }
 
 void RenderTexture::ClearSceneRenderTarget(
-	ID3D12GraphicsCommandList* commandList,
-	DX12Context* dx12Context) {
-	const float clearColor[4] = { 0.05f, 0.12f, 0.25f, 1.0f };
+	ID3D12GraphicsCommandList* commandList) {
+	const float clearColor[4] = { 0.1f, 0.25f, 0.5f, 1.0f };
 	commandList->ClearRenderTargetView(mSceneRtvHandle, clearColor, 0, nullptr);
 	commandList->ClearDepthStencilView(mDsvHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
 }
 
+
+void RenderTexture::TransitionToRenderTarget(
+	ID3D12GraphicsCommandList* commandList) {
+
+	D3D12_RESOURCE_BARRIER offScreenBarrier{};
+	offScreenBarrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	offScreenBarrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	offScreenBarrier.Transition.pResource = mSceneColorResource.Get();
+	offScreenBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+	offScreenBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+	commandList->ResourceBarrier(1, &offScreenBarrier);
+
+}
+
+void RenderTexture::TransitionToSrv(
+	ID3D12GraphicsCommandList* commandList)
+{
+	D3D12_RESOURCE_BARRIER offScreenBarrier{};
+	offScreenBarrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	offScreenBarrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	offScreenBarrier.Transition.pResource = mSceneColorResource.Get();
+	offScreenBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+	offScreenBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+	commandList->ResourceBarrier(1, &offScreenBarrier);
+}

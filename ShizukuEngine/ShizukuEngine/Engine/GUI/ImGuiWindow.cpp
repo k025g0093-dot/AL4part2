@@ -316,3 +316,66 @@ void ImGuiModelWindow::update(ModelManager* modelManager) {
 	end();
 #endif // USE_IMGUI
 }
+
+void ImGuiViewportWindow::update(RenderTexture* RenderTexture) {
+
+#ifdef USE_IMGUI
+
+	mRenderTexture = RenderTexture;
+
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0.0f, 0.0f });
+
+	if (ImGui::Begin("デバックビューポート", nullptr,
+		ImGuiWindowFlags_NoScrollbar |
+		ImGuiWindowFlags_NoScrollWithMouse |
+		ImGuiWindowFlags_NoBringToFrontOnFocus)) {
+
+		ImVec2 viewportSize = ImGui::GetContentRegionAvail();
+
+		ImGui::Image(
+			(ImTextureID)mRenderTexture->GetSceneSrvGpuHandle().ptr,
+			viewportSize,
+			ImVec2(0, 0),
+			ImVec2(1, 1),
+			ImVec4(1.0f, 1.0f, 1.0f, 1.0f),
+			ImVec4(0.0f, 0.0f, 0.0f, 0.0f)
+		);
+
+	}
+		ImGui::End();
+		ImGui::PopStyleVar(2);
+#endif
+}
+
+
+void ImGuiPlayViewportWindow::update(RenderTexture* RenderTexture) {
+
+#ifdef USE_IMGUI
+
+	mRenderTexture = RenderTexture;
+
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0.0f, 0.0f });
+
+	if (ImGui::Begin("プレイビューポート", nullptr,
+		ImGuiWindowFlags_NoScrollbar |
+		ImGuiWindowFlags_NoScrollWithMouse |
+		ImGuiWindowFlags_NoBringToFrontOnFocus)) {
+
+		ImVec2 viewportSize = ImGui::GetContentRegionAvail();
+
+		ImGui::Image(
+			(ImTextureID)mRenderTexture->GetSceneSrvGpuHandle().ptr,
+			viewportSize,
+			ImVec2(0, 0),
+			ImVec2(1, 1),
+			ImVec4(1.0f, 1.0f, 1.0f, 1.0f),
+			ImVec4(0.0f, 0.0f, 0.0f, 0.0f)
+		);
+
+	}
+		ImGui::End();
+		ImGui::PopStyleVar(2);
+#endif
+}
