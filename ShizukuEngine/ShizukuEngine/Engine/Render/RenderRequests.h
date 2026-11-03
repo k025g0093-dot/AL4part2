@@ -29,6 +29,7 @@ struct DrawRequest {
 class TextureManager;
 class LightManager;
 class DX12Context;
+class RenderTexture;
 
 class RenderRequests {
 public:
@@ -37,7 +38,8 @@ public:
 		ComPtr<ID3D12Device> device,
 		TextureManager* textureManager,
 		LightManager* lightManager,
-		DX12Context* dX12Context
+		DX12Context* dX12Context,
+		RenderTexture* renderTexture
 	);
 
 	//描画レンダーリクエスト
@@ -91,6 +93,7 @@ private://メンバ変数
 	TextureManager* mTextureManager = nullptr;
 	LightManager* mLightManager = nullptr;
 	DX12Context* mDX12Context = nullptr;
+	RenderTexture* mRenderTexture = nullptr;
 
 	std::vector<DrawRequest> mDrawRequests;//ドローリクエストの変数
 

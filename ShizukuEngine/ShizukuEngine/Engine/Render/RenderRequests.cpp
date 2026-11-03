@@ -1,4 +1,5 @@
 #include "RenderRequests.h"
+#include "RenderTexture.h"
 #include "TextureManager/TextureManager.h"
 #include "Light/LightManager.h"
 #include"DirectX/DX12Context.h"
@@ -7,13 +8,15 @@ void RenderRequests::InitRender(
 	ComPtr<ID3D12Device> device,
 	TextureManager* textureManager,
 	LightManager* lightManager,
-	DX12Context* dX12Context
+	DX12Context* dX12Context,
+	RenderTexture* renderTexture
 ) {
 
 	mDevice = device.Get();
 	mTextureManager = textureManager;
 	mLightManager = lightManager;
 	mDX12Context = dX12Context;
+	mRenderTexture = renderTexture;
 
 	HRESULT hr;
 	//ルートシグネチャを作成
@@ -50,6 +53,19 @@ void RenderRequests::RenderAllRequests(
 	Matrix4x4 billBoard
 
 ){
+
+	//レンダーをシーンに切り替える
+
+#ifdef USE_IMGUI
+	mRenderTexture->TransitionToRenderTarget(commandList.Get());
+
+	mRenderTexture->SetSceneRenderTarget(
+		commandList.Get());
+
+	mRenderTexture->ClearSceneRenderTarget(
+		commandList.Get());
+
+#endif//USE_IMGUI
 	// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 	// 3Dリクエストと2Dリクエストを分離
 	// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -88,6 +104,12 @@ void RenderRequests::RenderAllRequests(
 	if (!request2D.empty()) {//から出ない場合は実行をする
 		Render2DTarget(request2D, commandList, (int)request3D.size());
 	}
+
+
+#ifdef USE_IMGUI
+	mRenderTexture->TransitionToSrv(commandList.Get());
+#endif//USE_IMGUI
+
 	//たまったリストをクリアする
 	mDrawRequests.clear();
 }
@@ -192,7 +214,13 @@ void RenderRequests::Render3DTarget(
 
 	mShadowPass.End(commandList.Get());
 	
+
+#ifdef USE_IMGUI
+	mRenderTexture->SetSceneRenderTarget(
+		commandList.Get());
+#else
 	mDX12Context->SetMainRenderTarget();
+#endif//USE_IMGUI
 
 	//ルートシグネチャの設定
 	commandList->SetGraphicsRootSignature(rootSignature.Get());

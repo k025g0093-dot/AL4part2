@@ -3,6 +3,7 @@
 #include "Core/WinApp.h"
 #include "DirectX/DX12Context.h"
 #include "Render/RenderRequests.h"
+#include "Render/RenderTexture.h"
 
 #include "Core/LogSistem.h"
 #include "DirectX/DebugLayer.h"
@@ -120,6 +121,8 @@ private://各種変数などの初期化
 	DX12Context mDX12Context{};
 	WinApp mWinApp{};
 	RenderRequests mRenderRequests{};
+	RenderTexture mRenderTexture{};
+
 	DebugLayer mDebugLayer{};
 	Camera mCamera{};
 	TextureManager mTextureManager{};
@@ -129,6 +132,9 @@ private://各種変数などの初期化
 	ImGuiLightManagerWindow mLightWindow{};//ライト操作用のGUI（確認用）
 	ImGuiCameraWindow mCameraWindow{};//カメラ操作用のGUI（確認用）
 	ImGuiModelWindow mModelWindow{};//モデルの色を操作するGUI（確認用）
+	ImGuiViewportWindow mViewportWindow{};//レンダリング結果を表示するGUI（確認用デバック確認）
+	ImGuiPlayViewportWindow mPlayViewportWindow{};//プレイビューポート用のGUI（ゲーム実行確認）
+
 	ModelManager mModelManager{};
 
 	ImGuiDebugWindow mDebugWindow{};//デバック情報を載せたGUI

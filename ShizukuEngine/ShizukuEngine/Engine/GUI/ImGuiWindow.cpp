@@ -171,7 +171,7 @@ void ImGuiLightManagerWindow::update(LightManager* lm) {
 
 
 				if (lm->GetLight(i).type == 2) {
-					changed |= ImGui::DragFloat3("向き", &light.direction.x, 0.01f, -1.0f, 1.0f);
+					changed |= ImGui::DragFloat3("向き", &light.direction.x, 0.01f, -1.0f, 2.0f);
 					changed |= ImGui::DragFloat("範囲", &light.distance, 0.1f, 0.1f, 100.0f);
 					changed |= ImGui::DragFloat("減衰率", &light.decay, 0.01f, 0.0f, 10.0f);
 		
@@ -215,8 +215,6 @@ void ImGuiLightManagerWindow::update(LightManager* lm) {
 						ImGui::OpenPopup("LightFullPopup");
 					}
 				}
-
-
 			}
 			if (ImGui::BeginPopup("LightFullPopup")) {
 				ImGui::Text("これ以上ライトを追加できません（上限: %d）", lm->maxLight - 1);
@@ -317,4 +315,67 @@ void ImGuiModelWindow::update(ModelManager* modelManager) {
 	}
 	end();
 #endif // USE_IMGUI
+}
+
+void ImGuiViewportWindow::update(RenderTexture* RenderTexture) {
+
+#ifdef USE_IMGUI
+
+	mRenderTexture = RenderTexture;
+
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0.0f, 0.0f });
+
+	if (ImGui::Begin("デバックビューポート", nullptr,
+		ImGuiWindowFlags_NoScrollbar |
+		ImGuiWindowFlags_NoScrollWithMouse |
+		ImGuiWindowFlags_NoBringToFrontOnFocus)) {
+
+		ImVec2 viewportSize = ImGui::GetContentRegionAvail();
+
+		ImGui::Image(
+			(ImTextureID)mRenderTexture->GetSceneSrvGpuHandle().ptr,
+			viewportSize,
+			ImVec2(0, 0),
+			ImVec2(1, 1),
+			ImVec4(1.0f, 1.0f, 1.0f, 1.0f),
+			ImVec4(0.0f, 0.0f, 0.0f, 0.0f)
+		);
+
+	}
+		ImGui::End();
+		ImGui::PopStyleVar(2);
+#endif
+}
+
+
+void ImGuiPlayViewportWindow::update(RenderTexture* RenderTexture) {
+
+#ifdef USE_IMGUI
+
+	mRenderTexture = RenderTexture;
+
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0.0f, 0.0f });
+
+	if (ImGui::Begin("プレイビューポート", nullptr,
+		ImGuiWindowFlags_NoScrollbar |
+		ImGuiWindowFlags_NoScrollWithMouse |
+		ImGuiWindowFlags_NoBringToFrontOnFocus)) {
+
+		ImVec2 viewportSize = ImGui::GetContentRegionAvail();
+
+		ImGui::Image(
+			(ImTextureID)mRenderTexture->GetSceneSrvGpuHandle().ptr,
+			viewportSize,
+			ImVec2(0, 0),
+			ImVec2(1, 1),
+			ImVec4(1.0f, 1.0f, 1.0f, 1.0f),
+			ImVec4(0.0f, 0.0f, 0.0f, 0.0f)
+		);
+
+	}
+		ImGui::End();
+		ImGui::PopStyleVar(2);
+#endif
 }

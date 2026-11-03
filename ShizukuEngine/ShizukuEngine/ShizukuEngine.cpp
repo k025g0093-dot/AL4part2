@@ -44,13 +44,22 @@ void ShizukuEngine::Initialize( int width,int Height) {
 	mLightManager.Initialize(mDX12Context.GetDevice());
 	mModelManager.Initialize(mDX12Context.GetDevice(),&mTextureManager);
 
+	mRenderTexture.CreateSceneRtv(
+		mDX12Context.GetDevice(),
+		&mTextureManager,
+		width,
+		Height
+	);
+
 	//レンダーリクエストの初期化
 	mRenderRequests.CreateOrthographicMatrix(width, Height);
 	mRenderRequests.InitRender(
 		mDX12Context.GetDevice(),
 		&mTextureManager,
 		&mLightManager,
-		&mDX12Context);
+		&mDX12Context,
+		&mRenderTexture);
+
 
 	//ImGuiの初期化
 	mImGuiManager.Initialize(
@@ -131,6 +140,8 @@ void ShizukuEngine::PostDraw()
 	mLightWindow.update(&mLightManager);
 	mCameraWindow.update(&mCamera);
 	mModelWindow.update(&mModelManager);
+	mViewportWindow.update(&mRenderTexture);
+	mPlayViewportWindow.update(&mRenderTexture);
 
 	DebugStats stats{};
 	//stats.drawRequestCount = mRenderRequests.GetLastRequestCount();
