@@ -58,7 +58,7 @@ public:
 	void PostDraw();
 
 	//入力取得関数
-	Input& GetInput() { return mInput; }
+	Input GetInput()const { return mInput; }
 
 	//--------------------------------------------------------------
 	//画像ファイル読み込み関数

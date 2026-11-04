@@ -68,46 +68,46 @@ public:
 	bool IsPadConnected() const { return mIsPadConnected; }
 
 	// ボタンを「押し続けているか」 (例: XINPUT_GAMEPAD_A)
-	bool GetPadButton(WORD button) {
+	bool GetPadButton(WORD button)const {
 		return (mPadCurr.wButtons & button) != 0;
 	}
 
 	// ボタンを「押した瞬間か」
-	bool GetPadButtonDown(WORD button) {
+	bool GetPadButtonDown(WORD button) const {
 		return ((mPadCurr.wButtons & button) != 0) && ((mPadPrev.wButtons & button) == 0);
 	}
 
 	// ボタンを「離した瞬間か」
-	bool GetPadButtonUp(WORD button) {
+	bool GetPadButtonUp(WORD button)const {
 		return ((mPadCurr.wButtons & button) == 0) && ((mPadPrev.wButtons & button) != 0);
 	}
 
 	// 左スティックの入力を取る（戻り値は -1.0f ～ 1.0f。遊びも自動計算）
-	float GetLeftStickX() {
+	float GetLeftStickX()const {
 		if (std::abs(mPadCurr.sThumbLX) < XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE) return 0.0f;
 		return mPadCurr.sThumbLX / 32767.0f;
 	}
-	float GetLeftStickY() {
+	float GetLeftStickY() const {
 		if (std::abs(mPadCurr.sThumbLY) < XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE) return 0.0f;
 		return mPadCurr.sThumbLY / 32767.0f;
 	}
 
-	float GetLeftStick() {
+	float GetLeftStick() const {
 		if (std::abs(mPadCurr.sThumbLX) < XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE) return 0.0f;
 		return mPadCurr.sThumbLX / 32767.0f;
 	}
 
 	// 右スティックの入力を取る（戻り値は -1.0f ～ 1.0f。遊びも自動計算）
-	float GetRightStickX() {
+	float GetRightStickX() const {
 		if (std::abs(mPadCurr.sThumbRX) < XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE) return 0.0f;
 		return mPadCurr.sThumbRX / 32767.0f;
 	}
-	float GetRightStickY() {
+	float GetRightStickY() const {
 		if (std::abs(mPadCurr.sThumbRY) < XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE) return 0.0f;
 		return mPadCurr.sThumbRY / 32767.0f;
 	}
 
-	float GetRightStick() {
+	float GetRightStick() const {
 		if (std::abs(mPadCurr.sThumbRX) < XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE) return 0.0f;
 		return mPadCurr.sThumbRX / 32767.0f;
 	}
