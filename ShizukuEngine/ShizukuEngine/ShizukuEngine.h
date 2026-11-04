@@ -6,6 +6,7 @@
 #include "Render/RenderTexture.h"
 
 #include "Core/LogSistem.h"
+#include "Core/Input.h"
 #include "DirectX/DebugLayer.h"
 #include "Camera/Camera.h"
 
@@ -55,6 +56,9 @@ public:
 	//描画処理のpreとpost
 	void PreDraw();
 	void PostDraw();
+
+	//入力取得関数
+	Input& GetInput() { return mInput; }
 
 	//--------------------------------------------------------------
 	//画像ファイル読み込み関数
@@ -128,6 +132,7 @@ private://各種変数などの初期化
 	TextureManager mTextureManager{};
 	LightManager mLightManager;
 	ImGuiManager mImGuiManager{};
+	Input mInput{};
 
 	ImGuiLightManagerWindow mLightWindow{};//ライト操作用のGUI（確認用）
 	ImGuiCameraWindow mCameraWindow{};//カメラ操作用のGUI（確認用）

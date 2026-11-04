@@ -114,6 +114,8 @@ void ShizukuEngine::Update() {
 	mClock.Update();
 	const float deltaTime = mClock.GetDeltaTime();
 
+	mInput.Update();
+
 	for (EmitterSlot& slot : mEmitters) {
 		slot.emitter->Update(deltaTime);
 		

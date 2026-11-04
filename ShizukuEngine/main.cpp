@@ -80,6 +80,10 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			//engine->DrawSprite({ 100.0f, 100.0f }, 0.0f, 256.0f, 256.0f, { 1,1,1,1 }, tex);
 
 			engine->PostDraw();
+
+			if (engine->GetInput().GetKeyDown(VK_ESCAPE)) {
+				break;
+			}
 		}
 	}
 
