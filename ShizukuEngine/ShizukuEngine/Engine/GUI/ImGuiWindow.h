@@ -3,6 +3,7 @@
 #include "Light/LightManager.h"
 #include "Camera/Camera.h"
 #include "Render/RenderTexture.h"
+#include "Entity/EntityManager.h"
 
 class ModelManager;
 #ifdef USE_IMGUI
@@ -89,10 +90,12 @@ public:
 class ImGuiViewportWindow : public ImGuiUIWindow
 {
 public:
-    void update(RenderTexture* RenderTexture);
+    void update(RenderTexture* RenderTexture,
+        EntityManager* entityManager);
 
 private:
 
+    EntityManager* mEntityManager = nullptr;
 	RenderTexture* mRenderTexture = nullptr;
 
 };
