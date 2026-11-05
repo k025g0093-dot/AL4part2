@@ -26,6 +26,7 @@
 
 #include "Particle/ParticleEmitter.h"
 #include "DeltaTaime/Clock.h"
+#include "Entity/EntityManager.h"
 
 //ComPtr地獄だっきゃくのために必要
 using Microsoft::WRL::ComPtr;
@@ -80,7 +81,7 @@ public:
 	//エミッターの作成関数（引数はエミッターの情報とモデルの番号）
 	// 色の固定ができますデフォルトはランダムが指定されています
 	//--------------------------------------------------------------
-	int CreateEmitter(const Emitter& emitter, int modelIndex,bool isFixedColor=false );
+	int CreateEmitter(const Emitter& emitter, int modelIndex, bool isFixedColor = false);
 
 
 	//-----------------------------------描画関数-----------------------------------//
@@ -126,6 +127,7 @@ private://各種変数などの初期化
 	WinApp mWinApp{};
 	RenderRequests mRenderRequests{};
 	RenderTexture mRenderTexture{};
+	EntityManager mEntityManager{};
 
 	DebugLayer mDebugLayer{};
 	Camera mCamera{};
@@ -151,7 +153,7 @@ private://各種変数などの初期化
 	std::unique_ptr<Sphere> mSphereModel;
 	std::unique_ptr<Sprite> mSprite;
 
-	struct EmitterSlot {	
+	struct EmitterSlot {
 		std::unique_ptr<ParticleEmitter> emitter;
 		int modelIndex = -1;//初期値として何もない場合は出さない
 	};

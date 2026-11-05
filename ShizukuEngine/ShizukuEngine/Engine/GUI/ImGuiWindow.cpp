@@ -174,7 +174,7 @@ void ImGuiLightManagerWindow::update(LightManager* lm) {
 					changed |= ImGui::DragFloat3("向き", &light.direction.x, 0.01f, -1.0f, 2.0f);
 					changed |= ImGui::DragFloat("範囲", &light.distance, 0.1f, 0.1f, 100.0f);
 					changed |= ImGui::DragFloat("減衰率", &light.decay, 0.01f, 0.0f, 10.0f);
-		
+
 					changed |= ImGui::SliderAngle("スポットライト角度", &light.cosAngle, 1.0f, 89.0f);
 				}
 
@@ -317,10 +317,13 @@ void ImGuiModelWindow::update(ModelManager* modelManager) {
 #endif // USE_IMGUI
 }
 
-void ImGuiViewportWindow::update(RenderTexture* RenderTexture) {
+void ImGuiViewportWindow::update(
+	RenderTexture* RenderTexture,
+	EntityManager* entityManager) {
 
 #ifdef USE_IMGUI
 
+	mEntityManager = entityManager;
 	mRenderTexture = RenderTexture;
 
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
@@ -332,6 +335,7 @@ void ImGuiViewportWindow::update(RenderTexture* RenderTexture) {
 		ImGuiWindowFlags_NoBringToFrontOnFocus)) {
 
 		ImVec2 viewportSize = ImGui::GetContentRegionAvail();
+		ImVec2 imageScreenPos = ImGui::GetCursorScreenPos();
 
 		ImGui::Image(
 			(ImTextureID)mRenderTexture->GetSceneSrvGpuHandle().ptr,
@@ -342,9 +346,44 @@ void ImGuiViewportWindow::update(RenderTexture* RenderTexture) {
 			ImVec4(0.0f, 0.0f, 0.0f, 0.0f)
 		);
 
-	}
-		ImGui::End();
+
+
+		const auto playState = mEntityManager->GetPlayState();
+		const char* stateLabel = playState == EntityManager::PlayState::editing ? "EDIT"
+			: playState == EntityManager::PlayState::playing ? "PLAY"
+			: "PAUSE";
+		ImGui::SetCursorScreenPos(ImVec2(imageScreenPos.x + 10.0f, imageScreenPos.y + 10.0f));
+		ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.06f, 0.06f, 0.07f, 0.88f));
+		ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 4.0f);
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(8.0f, 6.0f));
+		ImGui::BeginChild("##ViewportPlayControls", ImVec2(245.0f, 32.0f), ImGuiChildFlags_Borders);
+		ImGui::TextColored(
+			playState == EntityManager::PlayState::editing ? ImVec4(0.70f, 0.70f, 0.70f, 1.0f)
+			: ImVec4(0.35f, 0.85f, 0.45f, 1.0f),
+			"%s", stateLabel);
+		ImGui::SameLine();
+		if (ImGui::Button("Play##Viewport", ImVec2(50.0f, 0.0f))
+			&& playState == EntityManager::PlayState::editing) {
+		}
+		ImGui::SameLine();
+		if (ImGui::Button(playState == EntityManager::PlayState::paused
+			? "Resume##Viewport" : "Pause##Viewport", ImVec2(58.0f, 0.0f))
+			&& playState != EntityManager::PlayState::editing) {
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Stop##Viewport", ImVec2(48.0f, 0.0f))
+			&& playState != EntityManager::PlayState::editing) {
+		}
+		ImGui::EndChild();
 		ImGui::PopStyleVar(2);
+		ImGui::PopStyleColor();
+
+	}
+
+
+
+	ImGui::End();
+	ImGui::PopStyleVar(2);
 #endif
 }
 
@@ -375,7 +414,7 @@ void ImGuiPlayViewportWindow::update(RenderTexture* RenderTexture) {
 		);
 
 	}
-		ImGui::End();
-		ImGui::PopStyleVar(2);
+	ImGui::End();
+	ImGui::PopStyleVar(2);
 #endif
 }

@@ -142,7 +142,7 @@ void ShizukuEngine::PostDraw()
 	mLightWindow.update(&mLightManager);
 	mCameraWindow.update(&mCamera);
 	mModelWindow.update(&mModelManager);
-	mViewportWindow.update(&mRenderTexture);
+	mViewportWindow.update(&mRenderTexture,&mEntityManager);
 	mPlayViewportWindow.update(&mRenderTexture);
 
 	DebugStats stats{};
