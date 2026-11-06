@@ -91,8 +91,13 @@ int ShizukuEngine::LoadTexture(const std::string& filePath) {
 }
 
 int ShizukuEngine::LoadModel(const std::string& filePath) {
-	//画像ファイルの読み込む
+	//モデルファイルの読み込む
 	return mModelManager.Load(filePath);
+}
+
+int ShizukuEngine::LoadSkinnedModel(const std::string& filePath) {
+	//スキン読み込み
+	return mModelManager.LoadSkinnedModel(filePath);
 }
 
 int ShizukuEngine::CreateEmitter(const Emitter& emitter, int modelIndex,bool isFixedColor) {
@@ -277,7 +282,6 @@ void ShizukuEngine::DrawSprite
 
 #pragma region 3Dモデル描画関数
 
-
 void ShizukuEngine::DrawModel
 (
 	int modelIndex,
@@ -309,7 +313,6 @@ void ShizukuEngine::DrawModel
 
 #pragma region パーティクル用モデル描画関数
 
-
 void ShizukuEngine::DrawModelParticle
 (
 	int modelIndex,
@@ -330,6 +333,38 @@ void ShizukuEngine::DrawModelParticle
 	req.scale = scale;//スケールを渡す
 	req.color = color;//色を渡す
 	req.isParticle = true;
+	if(textureIndx==-1){
+		req.textureIndex = model->GetTextureIndex();
+	}
+	else {
+		req.textureIndex = textureIndx;//テクスチャのインデックスを渡す
+	}
+	mRenderRequests.DrawRequestsSubmission(req);
+}
+#pragma endregion
+
+#pragma region スキンモデル用描画関数
+
+void ShizukuEngine::DrawSkinnedModel
+(
+	int modelIndex,
+	const Vector3& pos,
+	const Vector3& rot,
+	const Vector3& scale,
+	const Vector4 color,
+	int textureIndx
+) {
+	//番号からモデルを借りる（読み込み失敗の-1や範囲外ならnullptrが返る）
+	SkinnedModel* model = mModelManager.GetSkinned(modelIndex);
+	if (!model) { return; }
+
+	DrawRequest req;
+	req.model = model;
+	req.pos = pos;//位置を渡す
+	req.rot = rot;//回転度を渡す
+	req.scale = scale;//スケールを渡す
+	req.color = color;//色を渡す
+	req.isSkinnedModel = true;
 	if(textureIndx==-1){
 		req.textureIndex = model->GetTextureIndex();
 	}
