@@ -65,6 +65,8 @@ void ShizukuEngine::Initialize( int width,int Height) {
 
 
 	//ImGuiの初期化
+#ifdef USE_IMGUI
+
 	mImGuiManager.Initialize(
 		mWinApp.GetHwnd(),
 		mDX12Context.GetDevice(),
@@ -74,6 +76,7 @@ void ShizukuEngine::Initialize( int width,int Height) {
 		DXGI_FORMAT_R8G8B8A8_UNORM,
 		DXGI_FORMAT_UNKNOWN
 	);
+#endif // USE_IMGUI
 
 
 #ifdef _DEBUG
@@ -133,7 +136,10 @@ ShizukuEngine::~ShizukuEngine() {}
 void ShizukuEngine::PreDraw() 
 {
 	mDX12Context.PreDraw();
+#ifdef USE_IMGUI
 	mImGuiManager.Begin();
+#endif // USE_IMGUI
+
 }
 
 void ShizukuEngine::PostDraw() 
@@ -172,11 +178,16 @@ void ShizukuEngine::PostDraw()
 	);
 
 	mDX12Context.SetImGuiRenderTarget();
+
+#ifdef USE_IMGUI
 	mImGuiManager.End(mDX12Context.GetCommandList());
+#endif // USE_IMGUI
 
 	mDX12Context.PostDraw();
 
+#ifdef USE_IMGUI
 	mImGuiManager.RenderPlatformWindows();
+#endif // USE_IMGUI
 
 	mClock.UpdateFixFPS();
 

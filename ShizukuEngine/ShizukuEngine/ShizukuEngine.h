@@ -133,9 +133,10 @@ private://各種変数などの初期化
 	Camera mCamera{};
 	TextureManager mTextureManager{};
 	LightManager mLightManager;
-	ImGuiManager mImGuiManager{};
 	Input mInput{};
+
 #ifdef USE_IMGUI
+	ImGuiManager mImGuiManager{};
 
 	ImGuiLightManagerWindow mLightWindow{};//ライト操作用のGUI（確認用）
 	ImGuiCameraWindow mCameraWindow{};//カメラ操作用のGUI（確認用）
