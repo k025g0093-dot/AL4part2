@@ -135,6 +135,7 @@ private://各種変数などの初期化
 	LightManager mLightManager;
 	ImGuiManager mImGuiManager{};
 	Input mInput{};
+#ifdef USE_IMGUI
 
 	ImGuiLightManagerWindow mLightWindow{};//ライト操作用のGUI（確認用）
 	ImGuiCameraWindow mCameraWindow{};//カメラ操作用のGUI（確認用）
@@ -142,9 +143,12 @@ private://各種変数などの初期化
 	ImGuiViewportWindow mViewportWindow{};//レンダリング結果を表示するGUI（確認用デバック確認）
 	ImGuiPlayViewportWindow mPlayViewportWindow{};//プレイビューポート用のGUI（ゲーム実行確認）
 
+	ImGuiDebugWindow mDebugWindow{};//デバック情報を載せたGUI
+
+#endif // USE_IMGUI
+
 	ModelManager mModelManager{};
 
-	ImGuiDebugWindow mDebugWindow{};//デバック情報を載せたGUI
 
 	static ShizukuEngine* mInstance;
 

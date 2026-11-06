@@ -140,6 +140,7 @@ void ShizukuEngine::PostDraw()
 {
 
 	DrawEmitter();
+#ifdef USE_IMGUI
 
 	//ライトのGUI（ImGuiのフレーム中に呼ぶ）
 	mLightWindow.update(&mLightManager);
@@ -148,6 +149,7 @@ void ShizukuEngine::PostDraw()
 	mViewportWindow.update(&mRenderTexture,&mEntityManager);
 	mPlayViewportWindow.update(&mRenderTexture);
 
+
 	DebugStats stats{};
 	//stats.drawRequestCount = mRenderRequests.GetLastRequestCount();
 	//stats.drawCallCount = mRenderRequests.GetLastDrawCallCount();
@@ -155,6 +157,7 @@ void ShizukuEngine::PostDraw()
 	stats.modelCount = mModelManager.GetModelCount();
 	stats.lightCount = mLightManager.GetActiveLightCount();
 	mDebugWindow.Update(stats);
+#endif // USE_IMGUI
 
 	Matrix4x4 view = mCamera.GetViewMatrix();
 	Matrix4x4 proj = mCamera.GetProjectionMatrix((float)mWidth, (float)mHeight);

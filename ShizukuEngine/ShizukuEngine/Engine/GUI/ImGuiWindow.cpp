@@ -7,13 +7,12 @@
 #include <cmath>
 #include <cstring>
 
+#ifdef USE_IMGUI
 
 ImGuiUIWindow::ImGuiUIWindow() : show(true) {}
 ImGuiUIWindow::~ImGuiUIWindow() {}
-#ifdef USE_IMGUI
 static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::TRANSLATE);
 static ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::LOCAL);
-#endif // DEBUG
 
 
 void ImGuiUIWindow::update() {
@@ -418,3 +417,4 @@ void ImGuiPlayViewportWindow::update(RenderTexture* RenderTexture) {
 	ImGui::PopStyleVar(2);
 #endif
 }
+#endif // DEBUG

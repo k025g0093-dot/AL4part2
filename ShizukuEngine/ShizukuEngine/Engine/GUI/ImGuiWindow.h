@@ -7,7 +7,6 @@
 
 class ModelManager;
 #ifdef USE_IMGUI
-#endif // USE_IMGUI
 
 #include "imgui.h"
 #include "imgui_impl_win32.h"
@@ -120,4 +119,5 @@ public:
 	void SetObjectsIndex(int index) { selectedIndex = index; }
 };
 
+#endif // USE_IMGUI
 
