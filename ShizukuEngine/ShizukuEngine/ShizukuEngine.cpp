@@ -26,6 +26,9 @@ void ShizukuEngine::Initialize( int width,int Height) {
 	// ログ用フォルダの作成とログ初期化
 	std::filesystem::create_directory("logs");
 	InitializeLog();
+
+	mClock.InitializeFixFPS();
+
 #ifdef _DEBUG
 	mDebugLayer.EnableDebugLayer();
 #endif
@@ -171,6 +174,8 @@ void ShizukuEngine::PostDraw()
 	mDX12Context.PostDraw();
 
 	mImGuiManager.RenderPlatformWindows();
+
+	mClock.UpdateFixFPS();
 
 }
 

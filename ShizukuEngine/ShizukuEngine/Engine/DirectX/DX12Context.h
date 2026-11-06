@@ -41,7 +41,7 @@ public:
 
 private://プライベート関数
 
-
+ 
 
 	void InitFenceEvent();
 
