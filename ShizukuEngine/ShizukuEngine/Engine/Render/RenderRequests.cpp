@@ -33,7 +33,7 @@ void RenderRequests::InitRender(
 
 	mSkinnedInstanceBuffer = CreateBufferResource(mDevice, sizeof(Matrix4x4) * kMaxBones);
 	mSkinnedInstanceBuffer->Map(0, nullptr, reinterpret_cast<void**>(&mMappedBoneMatrices));
-	
+
 	for (int i = 0; i < kMaxBones; i++) {
 		mMappedBoneMatrices[i] = MakeIdentity4x4();
 	}
@@ -52,7 +52,7 @@ void RenderRequests::RenderAllRequests(
 	Vector3 cameraTranslate,
 	Matrix4x4 billBoard
 
-){
+) {
 
 	//レンダーをシーンに切り替える
 
@@ -144,7 +144,7 @@ void RenderRequests::Render3DTarget(
 			//バッチ化処理
 			if (a.model != b.model)return a.model < b.model;
 			if (a.textureIndex != b.textureIndex)return a.textureIndex < b.textureIndex;
-			
+
 
 			return false;
 		}
@@ -209,11 +209,14 @@ void RenderRequests::Render3DTarget(
 			commandList->SetGraphicsRoot32BitConstant(5, sStart, 0);
 			head.model->Draw(commandList.Get(), count, sStart);
 		}
+		else {
+			return;
+		}
 		sStart += count;
 	}
 
 	mShadowPass.End(commandList.Get());
-	
+
 
 #ifdef USE_IMGUI
 	mRenderTexture->SetSceneRenderTarget(
@@ -241,9 +244,16 @@ void RenderRequests::Render3DTarget(
 		DrawRequest& head = sortedRequests[start];
 
 		//パーティクルかの確認をしてブレンドモードを選択
-		ID3D12PipelineState* pipelineState = head.isParticle ?
-			pipelineStateParticle3D[head.blendMode].Get() :
-			pipelineState3D[head.blendMode].Get();
+		ID3D12PipelineState* pipelineState{};
+		if(head.isParticle){
+			pipelineState = pipelineStateParticle3D[head.blendMode].Get();
+		}
+		else if (head.isSkinnedModel) {
+			pipelineState = pipelineStateSkinned3D[head.blendMode].Get();
+		}
+		else {
+			pipelineState = pipelineState3D[head.blendMode].Get();
+		}
 
 		//パイプが前回と違う場合切り替えを行う
 		if (pipelineState != currentPipelineState) {
@@ -262,7 +272,8 @@ void RenderRequests::Render3DTarget(
 				next.textureIndex != head.textureIndex ||
 				next.renderOrder != head.renderOrder ||
 				next.blendMode != head.blendMode ||
-				next.isParticle!=head.isParticle
+				next.isParticle != head.isParticle||
+				next.isSkinnedModel!= head.isSkinnedModel
 				) {
 				break;
 			}
@@ -276,7 +287,17 @@ void RenderRequests::Render3DTarget(
 		commandList->SetGraphicsRootShaderResourceView(
 			1, mInstanceBuffer->GetGPUVirtualAddress());
 
-		if (head.model) {
+		if (head.isSkinnedModel) {
+			UINT startIndex = (UINT)(start);
+			commandList->SetGraphicsRoot32BitConstant(5, startIndex, 0);
+			commandList->SetGraphicsRootConstantBufferView(10, mSkinnedInstanceBuffer->GetGPUVirtualAddress());
+			BindTexture(commandList.Get(), head.textureIndex);
+			head.model->Draw(
+				commandList.Get(),
+				(UINT)(count),
+				startIndex
+			);
+		}else if (head.model) {
 			//スタートのインデックスにインスタンス「スタート」のインデックスを渡す
 			UINT startIndex = (UINT)(start);
 			commandList->SetGraphicsRoot32BitConstant(5, startIndex, 0);
@@ -355,16 +376,16 @@ void RenderRequests::Render2DTarget(
 		if (std::abs(safeScale.y) < minScale) safeScale.y = (safeScale.y >= 0.0f) ? minScale : -minScale;
 		if (std::abs(safeScale.z) < minScale) safeScale.z = (safeScale.z >= 0.0f) ? minScale : -minScale;
 
-		
+
 		mInstanceData[instanceOffset + i].World = MakeAffineMatrix(
 			request.scale,
 			request.rot,
 			request.pos
 		);
 
-		mInstanceData[instanceOffset +i].WVP = Multiply(mInstanceData[instanceOffset +i].World, mOrtho);
+		mInstanceData[instanceOffset + i].WVP = Multiply(mInstanceData[instanceOffset + i].World, mOrtho);
 
-		mInstanceData[instanceOffset+i].Color = request.color;
+		mInstanceData[instanceOffset + i].Color = request.color;
 	}
 
 	//今セットしているブレンドモード
@@ -391,7 +412,7 @@ void RenderRequests::Render2DTarget(
 			//同じモデルをまとめて処理するために行う
 			if (next.model != head.model ||
 				next.textureIndex != head.textureIndex ||
-				next.renderOrder != head.renderOrder||
+				next.renderOrder != head.renderOrder ||
 				next.blendMode != head.blendMode
 				) {
 				break;
@@ -407,7 +428,7 @@ void RenderRequests::Render2DTarget(
 
 		if (head.model) {
 			//スタートのインデックスにインスタンス「スタート」のインデックスを渡す
-			UINT startIndex = (UINT)(instanceOffset +start);
+			UINT startIndex = (UINT)(instanceOffset + start);
 			commandList->SetGraphicsRoot32BitConstant(5, startIndex, 0);
 			BindTexture(commandList.Get(), head.textureIndex);
 			head.model->Draw(
@@ -443,9 +464,9 @@ void RenderRequests::CreateInstanceBuffer(int DrawCount) {
 	);
 }
 
-void RenderRequests::CreateOrthographicMatrix(int width,int height) {
+void RenderRequests::CreateOrthographicMatrix(int width, int height) {
 	// 正射影行列を構築（画面座標系）
-		mOrtho = MakeOrthographicMatrix(
+	mOrtho = MakeOrthographicMatrix(
 		0.0f, 0.0f,
 		static_cast<float>(width), static_cast<float>(height),
 		0.1f, 100.0f

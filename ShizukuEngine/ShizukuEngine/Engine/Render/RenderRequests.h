@@ -22,6 +22,7 @@ struct DrawRequest {
 	bool isSprit = false;//スプライトかそうでないかの確認
 	bool is2D = false;
 	bool isParticle = false;//パーティクルかどうかの確認
+	bool isSkinnedModel = false;//3D
 	int lightId = -1;//ライトを付与する際のID
 	int renderOrder = 1;//レンダーのオーダー
 };

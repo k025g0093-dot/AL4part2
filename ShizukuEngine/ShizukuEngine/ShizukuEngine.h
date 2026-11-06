@@ -24,6 +24,7 @@
 #include "Model/Sprite/Sprite.h"
 #include "Model/Primitive/Sphere.h"
 
+
 #include "Particle/ParticleEmitter.h"
 #include "DeltaTaime/Clock.h"
 #include "Entity/EntityManager.h"
@@ -72,6 +73,11 @@ public:
 	int LoadModel(const std::string& filePath);
 
 	//--------------------------------------------------------------
+	//アニメーションスキン付きmodel読み込み関数
+	//--------------------------------------------------------------
+	int LoadSkinnedModel(const std::string& filePath);
+
+	//--------------------------------------------------------------
 	//パーティクルのフィールド作成関数
 	//--------------------------------------------------------------
 
@@ -110,7 +116,14 @@ public:
 	//--------------------------------------------------------------
 	//モデルの描画関数（引数は、モデル番号、位置、回転、スケール、色、テクスチャです）テクスチャは宣言をしなくても平気です
 	//--------------------------------------------------------------
+	void DrawSkinnedModel(int modelIndex, const Vector3& pos, const Vector3& rot, const Vector3& scale, const Vector4 color, int textureIndx = -1);
+
+	//--------------------------------------------------------------
+	//モデルパーティクルの描画関数（引数は、モデル番号、位置、回転、スケール、色、テクスチャです）テクスチャは宣言をしなくても平気です
+	//--------------------------------------------------------------
 	void DrawModelParticle(int modelIndex, const Vector3& pos, const Vector3& rot, const Vector3& scale, const Vector4 color, int textureIndx = -1);
+
+
 
 private://ヘルパー関数など内部関数がメイン
 
@@ -135,6 +148,8 @@ private://各種変数などの初期化
 	LightManager mLightManager;
 	Input mInput{};
 
+	ModelManager mModelManager{};
+	
 #ifdef USE_IMGUI
 	ImGuiManager mImGuiManager{};
 
@@ -148,7 +163,6 @@ private://各種変数などの初期化
 
 #endif // USE_IMGUI
 
-	ModelManager mModelManager{};
 
 
 	static ShizukuEngine* mInstance;

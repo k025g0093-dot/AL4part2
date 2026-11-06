@@ -37,7 +37,7 @@ void Clock::UpdateFixFPS() {
 		while (std::chrono::steady_clock::now() - mReference < kMinTime)
 		{
 
-			//std::this_thread::sleep_for(std::chrono::microseconds(1));
+			std::this_thread::sleep_for(std::chrono::microseconds(1));
 			std::this_thread::yield();
 
 		}
