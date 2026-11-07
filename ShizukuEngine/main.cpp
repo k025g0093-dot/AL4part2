@@ -30,7 +30,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//---------- 読み込み ----------
 	int tex = engine->LoadTexture("resources/uvChecker.png");
 	int model = engine->LoadModel("resources/fbx/Dragon 2.5_fbx.fbx");//失敗したら-1（DrawModelは何もしない）
-	int skinnedModel = engine->LoadSkinnedModel("resources/fbx/Dragon_Baked_Actions_fbx_7.4_binary.fbx");
+	int skinnedModel = engine->LoadSkinnedModel("resources/anime/dancing_vampire.dae");
 	assert(skinnedModel != -1 && "スキンモデルの読み込みに失敗");
 	int terrain = engine->LoadModel("resources/terrain/terrain.obj");
 	int particle = engine->LoadModel("resources/plane.gltf");
@@ -85,7 +85,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 				skinnedModel,
 				{ 0.0f, -2.0f, 0.0f },
 				{ 0.0f, modelRotateY, 0.0f },
-				{ 0.01f, 0.01f, 0.01f },
+				{ 1.0f, 1.0f, 1.0f },
 				{ 1.0f, 1.0f, 1.0f, 1.0f }
 			);
 
