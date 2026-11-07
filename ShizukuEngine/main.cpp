@@ -85,7 +85,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 				skinnedModel,
 				{ 0.0f, -2.0f, 0.0f },
 				{ 0.0f, modelRotateY, 0.0f },
-				{ 2.0f, 2.0f, 2.0f },
+				{ 0.01f, 0.01f, 0.01f },
 				{ 1.0f, 1.0f, 1.0f, 1.0f }
 			);
 

@@ -38,7 +38,6 @@ bool SkinnedModel::LoadSkinned(
 	//スキン用の構造体を使用
 
 	ProcessNode(scene->mRootNode, scene);
-	//ProcessMesh(*scene->mMeshes, scene);
 	CreateBuffers(device);
 	if (scene->mNumMeshes > 0) {
 		const unsigned int materialIndex = scene->mMeshes[0]->mMaterialIndex;
@@ -49,40 +48,13 @@ bool SkinnedModel::LoadSkinned(
 	mPMaterialResource = CreateBufferResource(device, Align256(sizeof(Material)));
 	UpdateMaterial();
 
-	//---------- 確認用：読み込んだ中身を出力ウィンドウに出す ----------
-	{
-		glm::vec3 minPos(FLT_MAX);
-		glm::vec3 maxPos(-FLT_MAX);
-		for (const Vertex& v : mVertices) {
-			minPos = (glm::min)(minPos, v.position);
-			maxPos = (glm::max)(maxPos, v.position);
-		}
-
-		uint32_t maxIndex = 0;
-		for (uint32_t index : mIndices) {
-			maxIndex = (std::max)(maxIndex, index);
-		}
-
-		std::string log;
-		log += "[SkinnedModel] " + filepath + "\n";
-		log += "  meshes   : " + std::to_string(scene->mNumMeshes) + "\n";
-		log += "  vertices : " + std::to_string(mVertices.size()) + "\n";
-		log += "  indices  : " + std::to_string(mIndices.size())
-			+ " (max index " + std::to_string(maxIndex) + ")\n";
-		log += "  bones    : " + std::to_string(mBoneCounter) + "\n";
-		log += "  min      : " + std::to_string(minPos.x) + ", " + std::to_string(minPos.y) + ", " + std::to_string(minPos.z) + "\n";
-		log += "  max      : " + std::to_string(maxPos.x) + ", " + std::to_string(maxPos.y) + ", " + std::to_string(maxPos.z) + "\n";
-		OutputDebugStringA(log.c_str());
-	}
-	//------------------------------------------------------------------
-
 	return true;
 }
 
 
 void SkinnedModel::Draw(
 	ID3D12GraphicsCommandList* cmdList,
-	UINT instanceCount, 
+	UINT instanceCount,
 	UINT startInstanceLocation) {
 
 	cmdList->IASetVertexBuffers(0, 1, &mVertexBufferView);
@@ -100,40 +72,13 @@ void SkinnedModel::SetVertexBoneDataToDefault(Vertex& vertex) {
 	}
 }
 
-void SkinnedModel::ProcessMesh(aiMesh* mesh, const aiScene* scene) {
-	for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
-		Vertex vertex;
-		SetVertexBoneDataToDefault(vertex);
-		vertex.position = GlmConvert::GetGLMVec(mesh->mVertices[i]);
-		vertex.normal = GlmConvert::GetGLMVec(mesh->mNormals[i]);
 
-		if (mesh->mTextureCoords[0]) {
-			glm::vec2 vec;
-			vec.x = mesh->mTextureCoords[0][i].x;
-			vec.y = mesh->mTextureCoords[0][i].y;
-			vertex.texCoords = vec;
-		}
-		else {
-			vertex.texCoords = glm::vec2(0.0f, 0.0f);
-		}
-		mVertices.push_back(vertex);
-	}
-
-	for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
-		aiFace face = mesh->mFaces[i];
-		for (unsigned int j = 0; j < face.mNumIndices; j++)
-			mIndices.push_back(face.mIndices[j]);
-	}
-
-	ExtractBoneWeightForVertices(mVertices, mesh, scene);
-
-}
 
 
 void SkinnedModel::ProcessNode(aiNode* node, const aiScene* scene,
 	const glm::mat4& parentTransform)
 {
-	glm::mat4 nodeTransform = parentTransform * GlmConvert::ConvertMatrixToGLMFormat( node->mTransformation);
+	glm::mat4 nodeTransform = parentTransform * GlmConvert::ConvertMatrixToGLMFormat(node->mTransformation);
 
 	for (UINT i = 0; i < node->mNumMeshes; i++) {
 		unsigned int meshIndex = node->mMeshes[i];
@@ -144,8 +89,8 @@ void SkinnedModel::ProcessNode(aiNode* node, const aiScene* scene,
 		for (UINT v = 0; v < mesh->mNumVertices; v++) {
 			Vertex vert{};
 			SetVertexBoneDataToDefault(vert);
-			glm::vec4 pos = nodeTransform * glm::vec4(GlmConvert::GetGLMVec(mesh->mVertices[v]),1.0f);
-			vert.position = { pos.x, pos.y, pos.z};
+			glm::vec4 pos = nodeTransform * glm::vec4(GlmConvert::GetGLMVec(mesh->mVertices[v]), 1.0f);
+			vert.position = { pos.x, pos.y, pos.z };
 			if (mesh->mTextureCoords[0]) {
 				vert.texCoords = { mesh->mTextureCoords[0][v].x,  mesh->mTextureCoords[0][v].y };
 			}
@@ -164,7 +109,7 @@ void SkinnedModel::ProcessNode(aiNode* node, const aiScene* scene,
 			for (UINT idx = 0; idx < face.mNumIndices; idx++)
 				mIndices.push_back(baseVertex + face.mIndices[idx]);
 		}
-		ExtractBoneWeightForVertices(mVertices, mesh, scene);
+		ExtractBoneWeightForVertices(mVertices, baseVertex, mesh, scene);
 
 	}
 	for (UINT i = 0; i < node->mNumChildren; i++)
@@ -186,7 +131,10 @@ void SkinnedModel::SetVertexBoneData(Vertex& vertex, int boneID, float weight)
 	}
 }
 
-void SkinnedModel::ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMesh* mesh, const aiScene* scene)
+void SkinnedModel::ExtractBoneWeightForVertices(
+	std::vector<Vertex>& vertices,
+	UINT vertex,
+	aiMesh* mesh, const aiScene* scene)
 {
 	for (int boneIndex = 0; boneIndex < mesh->mNumBones; boneIndex++) {
 
@@ -213,7 +161,7 @@ void SkinnedModel::ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, a
 			int vertexId = weights[weightIndex].mVertexId;
 			float weight = weights[weightIndex].mWeight;
 			assert(vertexId < vertices.size());
-			SetVertexBoneData(vertices[vertexId], boneID, weight);
+			SetVertexBoneData(vertices[vertex + vertexId], boneID, weight);
 		}
 	}
 }
@@ -257,6 +205,10 @@ void SkinnedModel::TexPath(const aiMaterial* mtl, const std::string& filepath) {
 	// 相対パスなら、モデルファイルがあるフォルダから見たパスにする
 	if (texPath.is_relative()) {
 		texPath = std::filesystem::path(filepath).parent_path() / texPath;
+	}
+	else {
+		//相対パスではない場合
+		texPath = std::filesystem::path(filepath).parent_path() / texPath.filename();
 	}
 	mTexturePath = texPath.lexically_normal().generic_string();
 }
