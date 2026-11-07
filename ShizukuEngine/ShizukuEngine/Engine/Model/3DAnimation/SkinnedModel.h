@@ -75,12 +75,13 @@ private://関数
 
 	static const aiScene* Load(const std::string& filepath, Assimp::Importer& importer);
 
-	void ProcessMesh(aiMesh* mesh, const aiScene* scene);
-
 	void ProcessNode(aiNode* node, const aiScene* scene,
 		const glm::mat4 & parentTransform =glm::mat4(1.0f));
 
-	void ExtractBoneWeightForVertices(std::vector<Vertex>& vertices, aiMesh* mesh, const aiScene* scene);
+	void ExtractBoneWeightForVertices(
+		std::vector<Vertex>& vertices,
+		UINT vertex,
+		aiMesh* mesh, const aiScene* scene);
 
 	void SetVertexBoneData(Vertex& vertex, int boneID, float weight);
 
