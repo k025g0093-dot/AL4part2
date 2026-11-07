@@ -3,11 +3,16 @@
 #include <string>
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
+#include <glm/gtc/quaternion.hpp>
 #include "AssimpGLMHelpersMath/GlmConvert.h"
 
 struct aiNodeAnim;
 
-//キーフレーム補間用
+/*
+各構造体に入っている"timeStamp"について
+どのタイミングで補間がいるのかを教えてくれる者になっています
+*/
+
 struct KeyPosition
 {
 	glm::vec3 position;
@@ -41,7 +46,7 @@ public:
 	int GetRotationIndex(float animationTime);
 	int GetScaleIndex(float animationTime);
 
-	glm::mat4 GetLocalTransform() { return mLocalTarnsform; }
+	glm::mat4 GetLocalTransform() { return mLocalTransform; }
 	std::string GetBoneName() const{ return mName; }
 	int GetBoneID() { return mID; }
 
@@ -65,7 +70,7 @@ private://メンバ変数
 	int mNumRotations;
 	int mNumScalings;
 
-	glm::mat4 mLocalTarnsform;//トランスフォーム
+	glm::mat4 mLocalTransform;//トランスフォーム
 	std::string mName;//名前
 	int mID;//ID
 
