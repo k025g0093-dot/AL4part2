@@ -35,7 +35,7 @@ class Bone
 
 public:
 
-	Bone();
+	Bone()=default;
 	~Bone();
 
 	void Initialize(const std::string& name, int ID, const aiNodeAnim* channel);

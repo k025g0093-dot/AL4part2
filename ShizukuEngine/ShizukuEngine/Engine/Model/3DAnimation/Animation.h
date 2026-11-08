@@ -30,7 +30,7 @@ public:
 
 	Bone* FindBone(const std::string& name);
 
-	float GetTicksPerSecond() { return mTickPerSecond; }
+	float GetTicksPerSecond() { return (float)mTickPerSecond; }
 	float GetDuration() { return mDuration; }
 	const AssimpNodeData& GetRootNode() { return mRootNode; }
 	const std::map<std::string, BoneInFo>& GetBoneIDMap() { return mBoneInFoMap; }
