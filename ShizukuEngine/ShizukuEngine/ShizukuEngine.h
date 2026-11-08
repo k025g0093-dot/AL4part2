@@ -29,6 +29,11 @@
 #include "DeltaTaime/Clock.h"
 #include "Entity/EntityManager.h"
 
+//アニメーションクラス関係
+#include "Model/3DAnimation/Animation.h"
+#include "Model/3DAnimation/Animator.h"
+
+
 //ComPtr地獄だっきゃくのために必要
 using Microsoft::WRL::ComPtr;
 using namespace std;
@@ -76,6 +81,11 @@ public:
 	//アニメーションスキン付きmodel読み込み関数
 	//--------------------------------------------------------------
 	int LoadSkinnedModel(const std::string& filePath);
+
+	//--------------------------------------------------------------
+	//アニメーションスキン付きmodel読み込み関数
+	//--------------------------------------------------------------
+	int LoadAnimation(const std::string& animationPath, int skinnedModel);
 
 	//--------------------------------------------------------------
 	//パーティクルのフィールド作成関数
@@ -147,6 +157,9 @@ private://各種変数などの初期化
 	TextureManager mTextureManager{};
 	LightManager mLightManager;
 	Input mInput{};
+
+	Animation mAnimation{};
+	Animator mAnimator{};
 
 	ModelManager mModelManager{};
 	

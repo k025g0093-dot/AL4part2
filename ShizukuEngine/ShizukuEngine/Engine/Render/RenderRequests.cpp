@@ -245,7 +245,7 @@ void RenderRequests::Render3DTarget(
 
 		//パーティクルかの確認をしてブレンドモードを選択
 		ID3D12PipelineState* pipelineState{};
-		if(head.isParticle){
+		if (head.isParticle) {
 			pipelineState = pipelineStateParticle3D[head.blendMode].Get();
 		}
 		else if (head.isSkinnedModel) {
@@ -272,8 +272,8 @@ void RenderRequests::Render3DTarget(
 				next.textureIndex != head.textureIndex ||
 				next.renderOrder != head.renderOrder ||
 				next.blendMode != head.blendMode ||
-				next.isParticle != head.isParticle||
-				next.isSkinnedModel!= head.isSkinnedModel
+				next.isParticle != head.isParticle ||
+				next.isSkinnedModel != head.isSkinnedModel
 				) {
 				break;
 			}
@@ -297,7 +297,8 @@ void RenderRequests::Render3DTarget(
 				(UINT)(count),
 				startIndex
 			);
-		}else if (head.model) {
+		}
+		else if (head.model) {
 			//スタートのインデックスにインスタンス「スタート」のインデックスを渡す
 			UINT startIndex = (UINT)(start);
 			commandList->SetGraphicsRoot32BitConstant(5, startIndex, 0);
@@ -479,4 +480,10 @@ void RenderRequests::BindTexture(ID3D12GraphicsCommandList* commandList, int tex
 		textureIndex = 0;
 	}
 	commandList->SetGraphicsRootDescriptorTable(2, mTextureManager->GetGPUHandle(textureIndex));
+}
+
+void RenderRequests::SetBoneMatrices(const std::vector<Matrix4x4>& matrix) {
+	for (int i = 0; i < kMaxBones; i++) {
+		std::memcpy(mMappedBoneMatrices, matrix.data(), sizeof(Matrix4x4) * i);
+	}
 }

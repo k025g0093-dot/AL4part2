@@ -118,6 +118,16 @@ int ShizukuEngine::CreateAccelerationField(const AccelerationField& field, int e
 	return 0; // 成功
 }
 
+int ShizukuEngine::LoadAnimation(const std::string& animationPath,int skinnedModel)
+{
+
+	SkinnedModel* model =	mModelManager.GetSkinned(skinnedModel);
+	if (model == nullptr)return -1;
+	
+	mAnimation.Initialize(animationPath,model);
+	mAnimator.Initialize(&mAnimation);
+	return 0;
+}
 
 
 void ShizukuEngine::Update() {
@@ -129,8 +139,9 @@ void ShizukuEngine::Update() {
 
 	for (EmitterSlot& slot : mEmitters) {
 		slot.emitter->Update(deltaTime);
-		
 	}
+
+	mAnimator.UpdateAnimation(deltaTime);
 
 }
 
@@ -175,6 +186,9 @@ void ShizukuEngine::PostDraw()
 	mViewProjectionMatrix = Multiply(view, proj);
 	Vector3 cameraTranslate = mCamera.transform.translate;
 	Matrix4x4 billBoard = mCamera.GetBillboardMatrix();
+
+	mRenderRequests.SetBoneMatrices(mAnimator.GetAnimationMatrix());
+
 	mRenderRequests.RenderAllRequests(
 		mDX12Context.GetCommandList(),
 		mViewProjectionMatrix,
@@ -189,6 +203,7 @@ void ShizukuEngine::PostDraw()
 #endif // USE_IMGUI
 
 	mDX12Context.PostDraw();
+
 
 #ifdef USE_IMGUI
 	mImGuiManager.RenderPlatformWindows();
