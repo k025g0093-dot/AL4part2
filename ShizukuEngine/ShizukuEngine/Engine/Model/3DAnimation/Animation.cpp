@@ -16,8 +16,8 @@ void Animation::Initialize(
 	const aiScene* scene = importer.ReadFile(animationPath, aiProcess_Triangulate);
 	assert(scene && scene->mRootNode);
 	auto animation = scene->mAnimations[0];
-	mDuration = animation->mDuration;
-	mTickPerSecond = animation->mTicksPerSecond;
+	mDuration =(float) animation->mDuration;
+	mTickPerSecond = (int)animation->mTicksPerSecond;
 	ReadHeirarchyData(mRootNode, scene->mRootNode);
 	ReadMissingBones(animation);
 }
@@ -33,26 +33,36 @@ Bone* Animation::FindBone(const std::string& name) {
 	else return &(*iter);
 }
 
-void Animation::ReadMissingBones(const aiAnimation* animation) {
-
-	int size = animation->mNumChannels;
-
-	auto& boneInFoMap = mSkinnedModel->GetBoneInFoMap();
-	int& boneCount = mSkinnedModel->GetBoneCount();
-
-	for (int i = 0; i < size; i++)
-	{
-
-		auto channel = animation->mChannels[i];
-		std::string boneName = channel->mNodeName.data;
-
-		if (boneInFoMap.find(boneName) == boneInFoMap.end())
+	void Animation::ReadMissingBones(const aiAnimation* animation) {
+		int size = animation->mNumChannels;
+		const auto& boneInFoMap = mSkinnedModel->GetBoneInFoMap();
+		int boneCount = mSkinnedModel->GetBoneCount();
+		mBoneInFoMap = boneInFoMap;
+		for (int i = 0; i < size; i++)
 		{
-			boneInFoMap[boneName].id = boneCount;
-			boneCount++;
+			auto channel = animation->mChannels[i];
+			std::string boneName = channel->mNodeName.data;
+			Bone bone{};
+			if (mBoneInFoMap.find(boneName) == mBoneInFoMap.end())
+			{
+				mBoneInFoMap[boneName].id = boneCount;
+				boneCount++;
+			}
+			bone.Initialize(channel->mNodeName.data,
+				mBoneInFoMap[channel->mNodeName.data].id, channel);
+		
+			mBones.push_back(std::move(bone));
 		}
-		mBones.push_back(Bone(channel->mNodeName.data,
-			boneInFoMap[channel->mNodeName.data].id, channel));
 	}
-	mBoneInFoMap = boneInFoMap;
-}
+
+	void Animation::ReadHeirarchyData(AssimpNodeData& dest, const aiNode* src) {
+		assert(src);
+		dest.name = src->mName.data;
+		dest.transformation = GlmConvert::ConvertMatrixToGLMFormat(src->mTransformation);
+		dest.childrenCount = src->mNumChildren;
+		for (int i = 0; i < src->mNumChildren; i++) {
+			AssimpNodeData newData;
+			ReadHeirarchyData(newData, src->mChildren[i]);
+			dest.children.push_back(newData);
+		}
+	}

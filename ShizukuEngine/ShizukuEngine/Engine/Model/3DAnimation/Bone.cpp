@@ -1,7 +1,6 @@
 #include "Bone.h"
 #include <assimp/scene.h>
 #pragma comment(lib,"assimp-vc145-mt")
-Bone::Bone() {}
 Bone::~Bone() {}
 
 void Bone::Initialize(const std::string& name, int ID, const aiNodeAnim* channel) {
@@ -16,7 +15,7 @@ void Bone::Initialize(const std::string& name, int ID, const aiNodeAnim* channel
 		//アニメーションのキーを格納
 		aiVector3D aiPosition = channel->mPositionKeys[positionIndex].mValue;
 		//キーの中に格納されてる時間を取得
-		float timeStamp = channel->mPositionKeys[positionIndex].mTime;
+		float timeStamp = (float)channel->mPositionKeys[positionIndex].mTime;
 		KeyPosition data{};
 		//glm型のVecに変更して代入
 		data.position = GlmConvert::GetGLMVec(aiPosition);
