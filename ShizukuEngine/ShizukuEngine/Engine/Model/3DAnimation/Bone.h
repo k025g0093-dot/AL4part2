@@ -50,9 +50,11 @@ public:
 	std::string GetBoneName() const{ return mName; }
 	int GetBoneID() { return mID; }
 
+	float GetScaleFactor(float lastTimeStamp, float nextTimeStamp, float animationTime);
+
+
 private://関数
 
-	float GetScaleFactor(float lastTimeStamp, float nextTimeStamp, float animationTime);
 
 	glm::mat4 InterpolatePosition(float animationTime);
 
