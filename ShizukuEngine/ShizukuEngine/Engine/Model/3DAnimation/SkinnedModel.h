@@ -69,6 +69,9 @@ public:
 		mTextureIndex = textureIndex;
 	}
 
+	auto& GetBoneInFoMap() { return mBoneInfoMap; }
+	int& GetBoneCount() { return mBoneCounter; }
+
 private://関数
 
 	void SetVertexBoneDataToDefault(Vertex& vertex);
@@ -84,9 +87,6 @@ private://関数
 		aiMesh* mesh, const aiScene* scene);
 
 	void SetVertexBoneData(Vertex& vertex, int boneID, float weight);
-
-	auto& GetBoneInFoMap() { return mBoneInfoMap; }
-	int& GetBoneCount() { return mBoneCounter; }
 
 	//mColorなどの値をマテリアルのバッファに書き込む
 	void UpdateMaterial();

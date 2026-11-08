@@ -145,6 +145,7 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ShizukuEngine\Engine\Model\3DAnimation\Animation.cpp" />
     <ClCompile Include="ShizukuEngine\Engine\Model\3DAnimation\Bone.cpp" />
     <ClCompile Include="ShizukuEngine\Entity\EntityManager.cpp" />
     <ClCompile Include="ShizukuEngine\Entity\Component.cpp" />
@@ -184,6 +185,7 @@
     <ClCompile Include="ShizukuEngine\Engine\Model\3DAnimation\SkinnedModel.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ShizukuEngine\Engine\Model\3DAnimation\Animation.h" />
     <ClInclude Include="ShizukuEngine\Engine\Model\3DAnimation\Bone.h" />
     <ClInclude Include="ShizukuEngine\Entity\EntityManager.h" />
     <ClInclude Include="ShizukuEngine\Entity\Component.h" />
