@@ -13,7 +13,11 @@ void Animation::Initialize(
 {
 	mSkinnedModel = skinnedModel;
 	Assimp::Importer importer{};
-	const aiScene* scene = importer.ReadFile(animationPath, aiProcess_Triangulate);
+	const aiScene* scene = importer.ReadFile(
+		animationPath, 
+		aiProcess_ConvertToLeftHanded
+	);
+
 	assert(scene && scene->mRootNode);
 	auto animation = scene->mAnimations[0];
 	mDuration =(float) animation->mDuration;

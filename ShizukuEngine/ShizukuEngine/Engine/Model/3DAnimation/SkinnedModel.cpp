@@ -89,13 +89,13 @@ void SkinnedModel::ProcessNode(aiNode* node, const aiScene* scene,
 		for (UINT v = 0; v < mesh->mNumVertices; v++) {
 			Vertex vert{};
 			SetVertexBoneDataToDefault(vert);
-			glm::vec4 pos = nodeTransform * glm::vec4(GlmConvert::GetGLMVec(mesh->mVertices[v]), 1.0f);
+			glm::vec4 pos = glm::vec4(GlmConvert::GetGLMVec(mesh->mVertices[v]), 1.0f);
 			vert.position = { pos.x, pos.y, pos.z };
 			if (mesh->mTextureCoords[0]) {
 				vert.texCoords = { mesh->mTextureCoords[0][v].x,  mesh->mTextureCoords[0][v].y };
 			}
 			if (mesh->mNormals) {
-				glm::vec3 nm = glm::normalize(glm::mat3(nodeTransform) * GlmConvert::GetGLMVec(mesh->mNormals[v]));
+				glm::vec3 nm = glm::normalize(GlmConvert::GetGLMVec(mesh->mNormals[v]));
 				vert.normal = { nm.x, nm.y, nm.z };
 			}
 			if (mesh->mTangents) {

@@ -56,6 +56,7 @@ public:
 	//正射影行列作成
 	void CreateOrthographicMatrix(int width, int height);
 
+	void SetBoneMatrices(const std::vector<Matrix4x4>&matrix);
 
 
 private://ヘルパー関数など

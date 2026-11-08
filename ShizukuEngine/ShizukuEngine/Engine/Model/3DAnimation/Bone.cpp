@@ -61,30 +61,31 @@ void Bone::Update(float animationTime) {
 }
 
 int Bone::GetPositionIndex(float animationTime) {
-	for (int index = 0; index < mNumPositions; index++) {
+	for (int index = 0; index < mNumPositions-1; index++) {
 		if (animationTime < mPosition[index + 1].timeStamp) {
 			return index;
 		}
-		assert(0);
 	}
+	assert(0);
 }
 
 int Bone::GetRotationIndex(float animationTime){
-	for (int index = 0; index < mNumRotations; index++) {
+	for (int index = 0; index < mNumRotations-1; index++) {
 		if (animationTime < mRotation[index + 1].timeStamp) {
 			return index;
 		}
-		assert(0);
 	}
+	assert(0);
 }
 
 int Bone::GetScaleIndex(float animationTime) {
-	for (int index = 0; index < mNumScalings; index++) {
+	for (int index = 0; index < mNumScalings-1; index++) {
 		if (animationTime < mScale[index + 1].timeStamp) {
 			return index;
 		}
-		assert(0);
 	}
+	assert(0);
+
 }
 
 float Bone::GetScaleFactor(float lastTimeStamp, float nextTimeStamp, float animationTime) {
