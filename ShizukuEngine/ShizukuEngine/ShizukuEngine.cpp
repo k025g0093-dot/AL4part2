@@ -148,11 +148,18 @@ int ShizukuEngine::LoadAnimation(const std::string& animationPath, int skinnedMo
 {
 	SkinnedModel* model = mModelManager.GetSkinned(skinnedModel);
 	if (model == nullptr)return -1;
+
 	auto animationModel = std::make_unique<Animation>();
 	animationModel->Initialize(animationPath, model);
 	mAnimations.push_back(std::move(animationModel));
-	mAnimator.Initialize(mAnimations.back().get());
-	return 0;
+
+	auto animator = std::make_unique<Animator>();
+	animator->Initialize(mAnimations.back().get());
+	mAnimator.push_back(std::move(animator));
+
+	mRenderRequests.EnsureSkinnedCapacity(static_cast<int>(mAnimator.size()));
+
+	return static_cast<int>(mAnimations.size())-1;
 }
 
 
@@ -167,7 +174,10 @@ void ShizukuEngine::Update() {
 		slot.emitter->Update(deltaTime);
 	}
 
-	mAnimator.UpdateAnimation(deltaTime);
+	for (auto& animator : mAnimator){
+		animator->UpdateAnimation(deltaTime);
+	}
+
 
 }
 
@@ -216,7 +226,9 @@ void ShizukuEngine::PostDraw()
 	Vector3 cameraTranslate = mCamera.transform.translate;
 	Matrix4x4 billBoard = mCamera.GetBillboardMatrix();
 
-	mRenderRequests.SetBoneMatrices(mAnimator.GetAnimationMatrix());
+	for (int it = 0; it < mAnimator.size(); it++) {
+		mRenderRequests.SetBoneMatrices(mAnimator[it]->GetAnimationMatrix(), it);
+	}
 
 	mRenderRequests.RenderAllRequests(
 		mDX12Context.GetCommandList(),
@@ -394,6 +406,7 @@ void ShizukuEngine::DrawModelParticle
 void ShizukuEngine::DrawSkinnedModel
 (
 	int modelIndex,
+	int boneSlot,
 	const Vector3& pos,
 	const Vector3& rot,
 	const Vector3& scale,
@@ -402,10 +415,12 @@ void ShizukuEngine::DrawSkinnedModel
 ) {
 	//番号からモデルを借りる（読み込み失敗の-1や範囲外ならnullptrが返る）
 	SkinnedModel* model = mModelManager.GetSkinned(modelIndex);
+
 	if (!model) { return; }
 
 	DrawRequest req;
 	req.model = model;
+	req.boneSlot = boneSlot;
 	req.pos = pos;//位置を渡す
 	req.rot = rot;//回転度を渡す
 	req.scale = scale;//スケールを渡す

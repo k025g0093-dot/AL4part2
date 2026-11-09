@@ -25,6 +25,7 @@ struct DrawRequest {
 	bool isSkinnedModel = false;//3D
 	int lightId = -1;//ライトを付与する際のID
 	int renderOrder = 1;//レンダーのオーダー
+	int boneSlot = 0;
 };
 //前方宣言
 class TextureManager;
@@ -56,7 +57,9 @@ public:
 	//正射影行列作成
 	void CreateOrthographicMatrix(int width, int height);
 
-	void SetBoneMatrices(const std::vector<Matrix4x4>&matrix);
+	void SetBoneMatrices(const std::vector<Matrix4x4>&matrix,int slot);
+
+	void EnsureSkinnedCapacity(int count);
 
 
 private://ヘルパー関数など
@@ -80,12 +83,15 @@ private://ヘルパー関数など
 	//バッチのテクスチャをparam 2にセットする（範囲外は0番）
 	void BindTexture(ID3D12GraphicsCommandList* commandList, int textureIndex);
 
+
 private://メンバ変数
 
 	int mLastRequestCount = 0;   //前フレームの描画リクエスト数
 	int mLastDrawCallCount = 0;  //前フレームのドローコール数
 
 	int mMaxDrawCount = 128;
+	int mMaxSkinnedModelCount = 128;
+
 	ComPtr<ID3D12RootSignature>  rootSignature;//ルートシグネチャ
 	//ブレンドモードごとのPSO（添字にBlendModeを使う）
 	std::array<ComPtr<ID3D12PipelineState>, kCountOfBlendMode> pipelineState3D;//3D用

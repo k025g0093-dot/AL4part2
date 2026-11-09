@@ -25,6 +25,10 @@ public:
 	}
 
 private:
+
+
+
+private:
 	std::vector<Matrix4x4> matrix;
 	std::vector<glm::mat4>mFinalBoneMatrices;
 	Animation* mCurrentAnimation;

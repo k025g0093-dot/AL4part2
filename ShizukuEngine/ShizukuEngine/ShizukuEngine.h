@@ -125,9 +125,13 @@ public:
 	void DrawModel(int modelIndex, const Vector3& pos, const Vector3& rot, const Vector3& scale, const Vector4 color, int textureIndx = -1);
 
 	//--------------------------------------------------------------
-	//モデルの描画関数（引数は、モデル番号、位置、回転、スケール、色、テクスチャです）テクスチャは宣言をしなくても平気です
+	//モデルの描画関数（引数は、モデル番号、アニメーション値、位置、回転、スケール、色、テクスチャです）テクスチャは宣言をしなくても平気です
 	//--------------------------------------------------------------
-	void DrawSkinnedModel(int modelIndex, const Vector3& pos, const Vector3& rot, const Vector3& scale, const Vector4 color, int textureIndx = -1);
+	void DrawSkinnedModel(
+		int modelIndex, int boneSlot,
+		const Vector3& pos, const Vector3& rot, const Vector3& scale,
+		const Vector4 color, 
+		int textureIndx = -1);
 
 	//--------------------------------------------------------------
 	//モデルパーティクルの描画関数（引数は、モデル番号、位置、回転、スケール、色、テクスチャです）テクスチャは宣言をしなくても平気です
@@ -161,10 +165,10 @@ private://各種変数などの初期化
 
 	std::vector<std::unique_ptr<Animation>> mAnimations;
 	Animation mAnimation{};
-	Animator mAnimator{};
+	std::vector < std::unique_ptr< Animator>> mAnimator{};
 
 	ModelManager mModelManager{};
-	
+
 #ifdef USE_IMGUI
 	ImGuiManager mImGuiManager{};
 

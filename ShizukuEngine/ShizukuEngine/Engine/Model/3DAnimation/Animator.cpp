@@ -42,11 +42,10 @@ void Animator::CalculateBoneTransform(
 	std::string nodeName = node->name;
 	glm::mat4 nodeTransform = node->transformation;
 
-	Bone* bone = mCurrentAnimation->FindBone(nodeName);
+	const Bone* bone = mCurrentAnimation->FindBone(nodeName);
 
 	if (bone) {
-		bone->Update(mCurrentTime);
-		nodeTransform = bone->GetLocalTransform();
+		nodeTransform = bone->CalculateLocalTransform(mCurrentTime);
 	}
 
 	glm::mat4 globalTransformation = parentTransform * nodeTransform;
@@ -61,3 +60,5 @@ void Animator::CalculateBoneTransform(
 		CalculateBoneTransform(&node->children[i], globalTransformation);
 	}
 }
+
+

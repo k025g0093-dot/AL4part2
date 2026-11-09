@@ -35,32 +35,32 @@ class Bone
 
 public:
 
-	Bone()=default;
+	Bone() = default;
 	~Bone();
 
 	void Initialize(const std::string& name, int ID, const aiNodeAnim* channel);
 
-	void Update(float animationTime);
 
-	int GetPositionIndex(float animationTime);
-	int GetRotationIndex(float animationTime);
-	int GetScaleIndex(float animationTime);
+	int GetPositionIndex(float animationTime)const;
+	int GetRotationIndex(float animationTime)const;
+	int GetScaleIndex(float animationTime)const;
 
 	glm::mat4 GetLocalTransform() { return mLocalTransform; }
-	std::string GetBoneName() const{ return mName; }
+	std::string GetBoneName() const { return mName; }
 	int GetBoneID() { return mID; }
 
-	float GetScaleFactor(float lastTimeStamp, float nextTimeStamp, float animationTime);
+	float GetScaleFactor(float lastTimeStamp, float nextTimeStamp, float animationTime)const;
 
+	glm::mat4 CalculateLocalTransform(float animationTime)const;
 
 private://関数
 
 
-	glm::mat4 InterpolatePosition(float animationTime);
+	glm::mat4 InterpolatePosition(float animationTime)const;
 
-	glm::mat4 InterpolateRotation(float animationTime);
+	glm::mat4 InterpolateRotation(float animationTime)const;
 
-	glm::mat4 InterpolateScaling(float animationTime);
+	glm::mat4 InterpolateScaling(float animationTime)const;
 
 
 private://メンバ変数
