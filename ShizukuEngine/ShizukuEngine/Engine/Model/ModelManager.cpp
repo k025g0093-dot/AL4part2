@@ -85,3 +85,6 @@ SkinnedModel* ModelManager::GetSkinned(int index)const {
 	return mSkinnedModel[index].get();
 
 }
+
+
+

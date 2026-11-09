@@ -6,6 +6,7 @@
 #include "Entity/EntityManager.h"
 
 class ModelManager;
+class ImGuiContentBrowser;
 #ifdef USE_IMGUI
 
 #include "imgui.h"
@@ -89,11 +90,14 @@ public:
 class ImGuiViewportWindow : public ImGuiUIWindow
 {
 public:
-    void update(RenderTexture* RenderTexture,
-        EntityManager* entityManager);
+    void update(
+        RenderTexture* RenderTexture,
+        EntityManager* entityManager,
+        ImGuiContentBrowser* imGuiContentBrowser);
 
 private:
 
+    ImGuiContentBrowser* mImGuiContentBrowser=nullptr;
     EntityManager* mEntityManager = nullptr;
 	RenderTexture* mRenderTexture = nullptr;
 

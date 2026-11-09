@@ -100,6 +100,32 @@ int ShizukuEngine::LoadSkinnedModel(const std::string& filePath) {
 	return mModelManager.LoadSkinnedModel(filePath);
 }
 
+void ShizukuEngine::OnFileDropped(const std::wstring& path) {
+
+	std::filesystem::path filePath(path);
+	std::string ext = filePath.extension().string();
+	std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+	if (ext == ".png" || ext == ".jpg") {
+		std::string pathStr = ConvertString(path); // パスを文字列に変換する
+		OutputDebugStringA(("Texture Loaded: " + pathStr + "\n").c_str());
+	}
+	else {
+
+		std::string dir = filePath.parent_path().string();
+		std::string filename = filePath.filename().string();
+		std::string modelPath = "resources/" + dir + "/" + filename;
+
+		int model = mModelManager.Load(modelPath);
+		int skinnedModel = mModelManager.LoadSkinnedModel(modelPath);
+
+		if (model !=-1|| skinnedModel!=-1) {
+
+		}
+
+	}
+}
+
 int ShizukuEngine::CreateEmitter(const Emitter& emitter, int modelIndex,bool isFixedColor) {
 
 	auto particleEmitter = std::make_unique<ParticleEmitter>();
@@ -118,14 +144,14 @@ int ShizukuEngine::CreateAccelerationField(const AccelerationField& field, int e
 	return 0; // 成功
 }
 
-int ShizukuEngine::LoadAnimation(const std::string& animationPath,int skinnedModel)
+int ShizukuEngine::LoadAnimation(const std::string& animationPath, int skinnedModel)
 {
-
-	SkinnedModel* model =	mModelManager.GetSkinned(skinnedModel);
+	SkinnedModel* model = mModelManager.GetSkinned(skinnedModel);
 	if (model == nullptr)return -1;
-	
-	mAnimation.Initialize(animationPath,model);
-	mAnimator.Initialize(&mAnimation);
+	auto animationModel = std::make_unique<Animation>();
+	animationModel->Initialize(animationPath, model);
+	mAnimations.push_back(std::move(animationModel));
+	mAnimator.Initialize(mAnimations.back().get());
 	return 0;
 }
 
@@ -158,6 +184,8 @@ void ShizukuEngine::PreDraw()
 
 }
 
+#pragma region postDraw
+
 void ShizukuEngine::PostDraw() 
 {
 
@@ -168,9 +196,10 @@ void ShizukuEngine::PostDraw()
 	mLightWindow.update(&mLightManager);
 	mCameraWindow.update(&mCamera);
 	mModelWindow.update(&mModelManager);
-	mViewportWindow.update(&mRenderTexture,&mEntityManager);
-	mPlayViewportWindow.update(&mRenderTexture);
+	mContentBrowser.update(&mTextureManager);
 
+	mViewportWindow.update(&mRenderTexture,&mEntityManager,&mContentBrowser);
+	mPlayViewportWindow.update(&mRenderTexture);
 
 	DebugStats stats{};
 	//stats.drawRequestCount = mRenderRequests.GetLastRequestCount();
@@ -209,9 +238,11 @@ void ShizukuEngine::PostDraw()
 	mImGuiManager.RenderPlatformWindows();
 #endif // USE_IMGUI
 
-	mClock.UpdateFixFPS();
+	//mClock.UpdateFixFPS();
 
 }
+
+#pragma endregion
 
 #pragma region 三角形描画関数
 

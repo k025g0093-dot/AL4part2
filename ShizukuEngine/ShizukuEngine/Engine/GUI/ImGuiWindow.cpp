@@ -1,5 +1,6 @@
 #include "ImGuiWindow.h"
 #include "Model/ModelManager.h"
+#include "ImGuiContentBrowser.h"
 
 #include <psapi.h>
 #pragma comment(lib, "psapi.lib")
@@ -318,13 +319,15 @@ void ImGuiModelWindow::update(ModelManager* modelManager) {
 
 void ImGuiViewportWindow::update(
 	RenderTexture* RenderTexture,
-	EntityManager* entityManager) {
+	EntityManager* entityManager,
+	ImGuiContentBrowser* imGuiContentBrowser
+) {
 
 #ifdef USE_IMGUI
 
 	mEntityManager = entityManager;
 	mRenderTexture = RenderTexture;
-
+	mImGuiContentBrowser = imGuiContentBrowser;
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, { 0.0f, 0.0f });
 
@@ -345,7 +348,13 @@ void ImGuiViewportWindow::update(
 			ImVec4(0.0f, 0.0f, 0.0f, 0.0f)
 		);
 
-
+		if (ImGui::BeginDragDropTarget()) {
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM")) {
+				const wchar_t* itemPath = (const wchar_t*)payload->Data;
+				auto contentBrowser = mImGuiContentBrowser;
+				//if(contentBrowser&&contentBrowser->onFileDorop)
+			}
+		}
 
 		const auto playState = mEntityManager->GetPlayState();
 		const char* stateLabel = playState == EntityManager::PlayState::editing ? "EDIT"
