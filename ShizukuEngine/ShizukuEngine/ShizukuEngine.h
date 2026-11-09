@@ -17,7 +17,7 @@
 
 #include "GUI/ImGuiManager.h"
 #include "GUI/ImGuiWindow.h"
-
+#include "GUI/ImGuiContentBrowser.h"
 
 //各種図形の関数が入ったヘッダ
 #include"Model/Primitive/TriangleModel.h"
@@ -100,6 +100,7 @@ public:
 	int CreateEmitter(const Emitter& emitter, int modelIndex, bool isFixedColor = false);
 
 
+
 	//-----------------------------------描画関数-----------------------------------//
 
 
@@ -142,7 +143,7 @@ private://ヘルパー関数など内部関数がメイン
 
 	void DrawEmitter();
 
-
+	void OnFileDropped(const std::wstring& path);
 
 private://各種変数などの初期化
 
@@ -158,6 +159,7 @@ private://各種変数などの初期化
 	LightManager mLightManager;
 	Input mInput{};
 
+	std::vector<std::unique_ptr<Animation>> mAnimations;
 	Animation mAnimation{};
 	Animator mAnimator{};
 
@@ -171,7 +173,7 @@ private://各種変数などの初期化
 	ImGuiModelWindow mModelWindow{};//モデルの色を操作するGUI（確認用）
 	ImGuiViewportWindow mViewportWindow{};//レンダリング結果を表示するGUI（確認用デバック確認）
 	ImGuiPlayViewportWindow mPlayViewportWindow{};//プレイビューポート用のGUI（ゲーム実行確認）
-
+	ImGuiContentBrowser mContentBrowser;
 	ImGuiDebugWindow mDebugWindow{};//デバック情報を載せたGUI
 
 #endif // USE_IMGUI

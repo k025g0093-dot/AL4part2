@@ -32,9 +32,9 @@ public:
 	//コンポーネント取得
 	T* GetComponent() {
 		//コンポーネントリストから指定された型を検索する
-		for (auto* component : mComponents) {
+		for (const auto* component : mComponents) {
 			//dynamic_castを使用して、指定された型にキャストできるかどうかを確認する
-			if (T* castedComponent = dynamic_cast<T*>(component)) {
+			if (T* castedComponent = dynamic_cast<T*>(component.get())) {
 				return castedComponent;
 			}
 		}
@@ -44,7 +44,7 @@ public:
 	//コンポーネント削除
 	void RemoveComponent(Component* component) {
 
-		auto isCompTarget=[component](const std::unique_ptr<Component>& comp) {
+		auto isCompTarget = [component](const std::unique_ptr<Component>& comp) {
 			return (comp.get() == component);
 			};
 
@@ -56,7 +56,7 @@ public:
 		mComponents.erase(it);
 	}
 
-	
+
 
 	const std::string& GetDisplayName()const { return mDisplayName; }
 

@@ -23,6 +23,12 @@ public:
 
 	const PlayState GetPlayState() const { return mPlayState; }
 
+	Entity* CreateEntity(const std::string& pathName);
+
+	void DestoryEntity(Entity* entity);
+
+	void UpdateAll(float dt);
+
 	//プレイの制御関数
 	void StartPlay();
 	void StopPlay();

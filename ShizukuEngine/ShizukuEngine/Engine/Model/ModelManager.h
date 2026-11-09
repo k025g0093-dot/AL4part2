@@ -30,6 +30,7 @@ public:
     //読み込み済みのモデルの数
     int GetModelCount() const { return static_cast<int>(mModels.size()); }
 
+
 private://メンバ変数
 
     //外から借りているもの
