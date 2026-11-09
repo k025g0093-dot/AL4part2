@@ -31,10 +31,11 @@ void RenderRequests::InitRender(
 	}
 	mShadowPass.Initialize(device.Get(), mTextureManager, rootSignature);
 
-	mSkinnedInstanceBuffer = CreateBufferResource(mDevice, sizeof(Matrix4x4) * kMaxBones);
+	mSkinnedInstanceBuffer = CreateBufferResource(mDevice, sizeof(Matrix4x4) * kMaxBones * mMaxDrawCount);
 	mSkinnedInstanceBuffer->Map(0, nullptr, reinterpret_cast<void**>(&mMappedBoneMatrices));
 
-	for (int i = 0; i < kMaxBones; i++) {
+
+	for (int i = 0; i < kMaxBones * mMaxDrawCount; i++) {
 		mMappedBoneMatrices[i] = MakeIdentity4x4();
 	}
 
@@ -290,7 +291,9 @@ void RenderRequests::Render3DTarget(
 		if (head.isSkinnedModel) {
 			UINT startIndex = (UINT)(start);
 			commandList->SetGraphicsRoot32BitConstant(5, startIndex, 0);
-			commandList->SetGraphicsRootConstantBufferView(10, mSkinnedInstanceBuffer->GetGPUVirtualAddress());
+			commandList->SetGraphicsRootConstantBufferView(
+				10,mSkinnedInstanceBuffer->GetGPUVirtualAddress()+
+				head.boneSlot*sizeof(Matrix4x4)*kMaxBones);
 			BindTexture(commandList.Get(), head.textureIndex);
 			head.model->Draw(
 				commandList.Get(),
@@ -482,8 +485,29 @@ void RenderRequests::BindTexture(ID3D12GraphicsCommandList* commandList, int tex
 	commandList->SetGraphicsRootDescriptorTable(2, mTextureManager->GetGPUHandle(textureIndex));
 }
 
-void RenderRequests::SetBoneMatrices(const std::vector<Matrix4x4>& matrix) {
-	for (int i = 0; i < kMaxBones; i++) {
-		std::memcpy(mMappedBoneMatrices, matrix.data(), sizeof(Matrix4x4) * i);
+void RenderRequests::SetBoneMatrices(const std::vector<Matrix4x4>& matrix, int slot) {
+	if (slot < 0 || mMaxSkinnedModelCount < slot) { return; }
+
+	std::memcpy(mMappedBoneMatrices + slot * kMaxBones, matrix.data(), sizeof(Matrix4x4)*matrix.size());
+}
+
+void RenderRequests::EnsureSkinnedCapacity(int count) {
+
+	int maxSkinnedModelCount = mMaxSkinnedModelCount;
+	while (count > size_t(maxSkinnedModelCount)) {
+		maxSkinnedModelCount = maxSkinnedModelCount * 2;
 	}
+	if (maxSkinnedModelCount > mMaxSkinnedModelCount) {
+		mSkinnedInstanceBuffer = CreateBufferResource(mDevice, sizeof(Matrix4x4) * kMaxBones * maxSkinnedModelCount);
+		mSkinnedInstanceBuffer->Map(0, nullptr, reinterpret_cast<void**>(&mMappedBoneMatrices));
+
+
+		for (int i = 0; i < kMaxBones * maxSkinnedModelCount; i++) {
+			mMappedBoneMatrices[i] = MakeIdentity4x4();
+		}
+
+		mMaxSkinnedModelCount = maxSkinnedModelCount;
+	}
+
+
 }

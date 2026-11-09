@@ -31,7 +31,11 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	int tex = engine->LoadTexture("resources/uvChecker.png");
 	int model = engine->LoadModel("resources/fbx/Dragon 2.5_fbx.fbx");//失敗したら-1（DrawModelは何もしない）
 	int skinnedModel = engine->LoadSkinnedModel("resources/new/Samba Dancing.dae");
-	engine->LoadAnimation("resources/new/Samba Dancing.dae", skinnedModel);
+	int anime=engine->LoadAnimation("resources/new/Samba Dancing.dae", skinnedModel);
+
+	int skinnedModel2 = engine->LoadSkinnedModel("resources/new/Freehang Climb.dae");
+	int anime2=engine->LoadAnimation("resources/new/Freehang Climb.dae", skinnedModel2);
+	
 	assert(skinnedModel != -1 && "スキンモデルの読み込みに失敗");
 	int terrain = engine->LoadModel("resources/terrain/terrain.obj");
 	int particle = engine->LoadModel("resources/plane.gltf");
@@ -84,9 +88,19 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 
 			engine->DrawSkinnedModel(
 				skinnedModel,
+				anime,
 				{ 0.0f, -2.0f, 0.0f },
 				{ 0.0f, modelRotateY, 0.0f },
-				{ 10.0f, 10.0f, 10.0f },
+				{ 1.0f, 1.0f, 1.0f },
+				{ 1.0f, 1.0f, 1.0f, 1.0f }
+			);
+
+			engine->DrawSkinnedModel(
+				skinnedModel2,
+				anime2,
+				{ 3.0f, -2.0f, 0.0f },
+				{ 0.0f, modelRotateY, 0.0f },
+				{ 1.0f, 1.0f, 1.0f },
 				{ 1.0f, 1.0f, 1.0f, 1.0f }
 			);
 
