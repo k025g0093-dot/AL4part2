@@ -228,7 +228,9 @@ D3D12_INPUT_LAYOUT_DESC CreateSkinnedLayout() {
 D3D12_BLEND_DESC CreateBlendState(BlendMode blendMode) {
 	D3D12_BLEND_DESC blendDesc{};
 	blendDesc.RenderTarget[0].RenderTargetWriteMask =
-		D3D12_COLOR_WRITE_ENABLE_ALL; // 全チャンネルへの書き込みを有効化
+		D3D12_COLOR_WRITE_ENABLE_RED|
+		D3D12_COLOR_WRITE_ENABLE_GREEN|
+		D3D12_COLOR_WRITE_ENABLE_BLUE; // 全チャンネルへの書き込みを有効化
 
 	// ブレンドなしなら、ここで終わり
 	if (blendMode == kBlendModeNone) {

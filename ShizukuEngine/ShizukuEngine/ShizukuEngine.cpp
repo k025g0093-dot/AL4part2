@@ -126,10 +126,10 @@ void ShizukuEngine::OnFileDropped(const std::wstring& path) {
 	}
 }
 
-int ShizukuEngine::CreateEmitter(const Emitter& emitter, int modelIndex,bool isFixedColor) {
+int ShizukuEngine::CreateEmitter(const Emitter& emitter, int modelIndex,Vector4 corol,bool isFixedColor) {
 
 	auto particleEmitter = std::make_unique<ParticleEmitter>();
-	particleEmitter->CreateEmitter(emitter,isFixedColor);
+	particleEmitter->CreateEmitter(emitter, corol,isFixedColor);
 
 	mEmitters.push_back({ std::move(particleEmitter),modelIndex });
 	return static_cast<int>(mEmitters.size()) - 1;

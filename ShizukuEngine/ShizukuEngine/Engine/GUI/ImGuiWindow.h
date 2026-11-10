@@ -7,6 +7,8 @@
 
 class ModelManager;
 class ImGuiContentBrowser;
+class ParticleEmitter;
+
 #ifdef USE_IMGUI
 
 #include "imgui.h"
@@ -121,6 +123,12 @@ public:
     int selectedIndex = -1;
 	void update() override;
 	void SetObjectsIndex(int index) { selectedIndex = index; }
+};
+
+class ImGuiParticleEitter :public ImGuiUIWindow
+{
+public:
+    void update(ParticleEmitter* particleEmitter);
 };
 
 #endif // USE_IMGUI

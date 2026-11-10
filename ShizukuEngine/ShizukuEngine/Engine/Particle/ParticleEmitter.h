@@ -25,6 +25,7 @@ struct Emitter
 	uint32_t count{};//一度に発生させる個数
 	Vector3 direction{};//向き
 	Vector3 velocityRange{};//広がる幅
+	Vector4 color;//色範囲
 	float frequency=0.5f;
 	float frequencyTime{};
 };
@@ -44,7 +45,7 @@ public:
 	ParticleEmitter();
 	~ParticleEmitter();
 
-	void CreateEmitter(const Emitter&emitter,bool isFixedColor=false );
+	void CreateEmitter(const Emitter&emitter,Vector4 corol,bool isFixedColor=false );
 
 	void SetAccelerationField(const AccelerationField&field);
 

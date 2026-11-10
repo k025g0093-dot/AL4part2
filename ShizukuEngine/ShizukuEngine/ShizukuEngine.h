@@ -97,7 +97,7 @@ public:
 	//エミッターの作成関数（引数はエミッターの情報とモデルの番号）
 	// 色の固定ができますデフォルトはランダムが指定されています
 	//--------------------------------------------------------------
-	int CreateEmitter(const Emitter& emitter, int modelIndex, bool isFixedColor = false);
+	int CreateEmitter(const Emitter& emitter, int modelIndex,Vector4 corol={1.0f,1.0f,1.0f,1.0f}, bool isFixedColor = false);
 
 
 

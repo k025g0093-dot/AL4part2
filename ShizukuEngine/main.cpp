@@ -30,17 +30,32 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 	//---------- 読み込み ----------
 	int tex = engine->LoadTexture("resources/uvChecker.png");
 	int model = engine->LoadModel("resources/fbx/Dragon 2.5_fbx.fbx");//失敗したら-1（DrawModelは何もしない）
-	int skinnedModel = engine->LoadSkinnedModel("resources/new/Samba Dancing.dae");
-	int anime=engine->LoadAnimation("resources/new/Samba Dancing.dae", skinnedModel);
+	int skinnedModel = engine->LoadSkinnedModel("resources/Flair/Flair.dae");
+	int anime=engine->LoadAnimation("resources/Flair/Flair.dae", skinnedModel);
 
-	int skinnedModel2 = engine->LoadSkinnedModel("resources/new/Freehang Climb.dae");
-	int anime2=engine->LoadAnimation("resources/new/Freehang Climb.dae", skinnedModel2);
-	
+	int skinnedModel2 = engine->LoadSkinnedModel("resources/new/Breakdance 1990.dae");
+	int anime2=engine->LoadAnimation("resources/new/Breakdance 1990.dae", skinnedModel2);
+
 	assert(skinnedModel != -1 && "スキンモデルの読み込みに失敗");
 	int terrain = engine->LoadModel("resources/terrain/terrain.obj");
-	int particle = engine->LoadModel("resources/plane.gltf");
+	int particle = engine->LoadModel("resources/paticle/fence.obj");
 	int skyDome = engine->LoadModel("resources/skyDome/skyDome.fbx");
 
+	Emitter emitter{};
+	emitter.position = { 0.0f, -2.0f, 0.0f };
+	emitter.count = 1;
+	emitter.velocityRange = { 0.5f, 2.0f, 0.5f };
+	emitter.frequency = 0.2f;
+	emitter.color = { 0.0f,0.50f,0.50f,1.0f };
+	int file=engine->CreateEmitter(emitter, particle, emitter.color); // あとは毎フレーム自動で出て、動いて、描かれる
+	
+	//上向きの場（範囲の中だけ粒が上に流れる）
+	AccelerationField field{};
+	field.acceleration = { 0.0f, 9.0f, 0.0f };
+	field.area.min = { -2.0f, -2.0f, -2.0f };
+	field.area.max = { 2.0f, 2.0f,  2.0f };
+	engine->CreateAccelerationField(field, file);
+	
 	Vector3 pos{ 0,0,0 };
 
 	//モデルを回して立体感を確認する用
@@ -69,18 +84,9 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 				{ 1.0f, 1.0f, 1.0f, 1.0f }
 			);
 
-			//engine->DrawModel(
-			//	particle,
-			//	{ 0.0f, 0.0f, 0.0f },
-			//	{ 0.0f, modelRotateY, 0.0f },
-			//	{ 1.0f, 1.0f, 1.0f },
-			//	{ 1.0f, 1.0f, 1.0f, 1.0f }
-			//);
-
-
 			engine->DrawModel(
 				terrain,
-				{ 0.0f, -2.0f, 0.0f },
+				{ 0.0f, 0.0f, 0.0f },
 				{ 0.0f, modelRotateY, 0.0f },
 				{ 2.0f, 2.0f, 2.0f },
 				{ 1.0f, 1.0f, 1.0f, 1.0f }
@@ -89,7 +95,7 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			engine->DrawSkinnedModel(
 				skinnedModel,
 				anime,
-				{ 0.0f, -2.0f, 0.0f },
+				{ 0.0f, 0.0f, 0.0f },
 				{ 0.0f, modelRotateY, 0.0f },
 				{ 1.0f, 1.0f, 1.0f },
 				{ 1.0f, 1.0f, 1.0f, 1.0f }
@@ -98,20 +104,12 @@ int WINAPI WinMain(_In_ HINSTANCE, _In_opt_ HINSTANCE, _In_ LPSTR, _In_ int) {
 			engine->DrawSkinnedModel(
 				skinnedModel2,
 				anime2,
-				{ 3.0f, -2.0f, 0.0f },
-				{ 0.0f, modelRotateY, 0.0f },
+				{ -2.0f, -0.5f, 1.0f },
+				{ 0.0f, --modelRotateY, 0.0f },
 				{ 1.0f, 1.0f, 1.0f },
 				{ 1.0f, 1.0f, 1.0f, 1.0f }
 			);
 
-
-			//---------- 今までの図形（モデルと重ならないよう横にずらす） ----------
-			for (int i = 0; i < 10; i++) {
-				engine->DrawTriangle({ pos.x - 3.0f + 0.1f * i, pos.y + 0.1f * i, pos.z - 1.5f * i }, { 0,0,0 }, { 1,1,1 }, { 1,1,1,1 }, tex);
-				engine->DrawSphere({ pos.x + 6.0f + 0.1f * i, pos.y + 0.1f * i, pos.z + 2.0f * i }, { 1,1,1 }, { 1,1,1 }, { 1,1,1,1 }, tex);
-			}
-
-			//engine->DrawSprite({ 100.0f, 100.0f }, 0.0f, 256.0f, 256.0f, { 1,1,1,1 }, tex);
 
 			engine->PostDraw();
 

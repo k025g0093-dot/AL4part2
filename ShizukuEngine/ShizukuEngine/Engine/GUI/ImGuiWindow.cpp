@@ -1,6 +1,7 @@
 #include "ImGuiWindow.h"
 #include "Model/ModelManager.h"
 #include "ImGuiContentBrowser.h"
+#include "Particle/ParticleEmitter.h"
 
 #include <psapi.h>
 #pragma comment(lib, "psapi.lib")
@@ -426,4 +427,11 @@ void ImGuiPlayViewportWindow::update(RenderTexture* RenderTexture) {
 	ImGui::PopStyleVar(2);
 #endif
 }
+
+
+void ImGuiParticleEitter::update(ParticleEmitter* particleEmitter) {
+
+
+}
+
 #endif // DEBUG
