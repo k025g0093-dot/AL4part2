@@ -145,6 +145,8 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Fade.cpp" />
+    <ClCompile Include="Game\GameScene.cpp" />
     <ClCompile Include="ShizukuEngine\Engine\GUI\ImGuiContentBrowser.cpp" />
     <ClCompile Include="ShizukuEngine\Engine\Model\3DAnimation\Animator.cpp" />
     <ClCompile Include="ShizukuEngine\Engine\Model\3DAnimation\Animation.cpp" />
@@ -185,8 +187,12 @@
     <ClCompile Include="ShizukuEngine\Engine\DirectX\VertexResource.cpp" />
     <ClCompile Include="ShizukuEngine\Engine\Core\WinApp.cpp" />
     <ClCompile Include="ShizukuEngine\Engine\Model\3DAnimation\SkinnedModel.cpp" />
+    <ClCompile Include="Game\TitleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Fade.h" />
+    <ClInclude Include="Game\GameScene.h" />
+    <ClInclude Include="Game\IScene.h" />
     <ClInclude Include="ShizukuEngine\Engine\GUI\ImGuiContentBrowser.h" />
     <ClInclude Include="ShizukuEngine\Engine\Model\3DAnimation\Animator.h" />
     <ClInclude Include="ShizukuEngine\Engine\Model\3DAnimation\Animation.h" />
@@ -236,6 +242,7 @@
     <ClInclude Include="ShizukuEngine\Engine\DirectX\VertexResource.h" />
     <ClInclude Include="ShizukuEngine\Engine\Core\WinApp.h" />
     <ClInclude Include="ShizukuEngine\Engine\Model\3DAnimation\SkinnedModel.h" />
+    <ClInclude Include="Game\TitleScene.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editoroconfig" />
