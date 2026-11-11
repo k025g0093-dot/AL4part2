@@ -4,6 +4,8 @@
 #include "Fade.h"
 #include "Player/Player.h"
 #include "Player/PlayerInputMapper.h"
+#include "FollowCamera.h"
+
 class GameScene : public IScene
 {
 
@@ -28,6 +30,8 @@ private:
 
 	Player mPlayer;
 	PlayerInputMapper mInputMapper;
+
+	FollowCamera mFollowCamera;
 
 	//素材（モデルど）int型で指定
 

@@ -14,6 +14,8 @@ void GameScene::Initialize(ShizukuEngine* engine) {
 	dancce= mEngine->LoadAnimation("resources/Flair/Flair.dae", player);
 
 	mPlayer.Initialize(player, Vector3{ 0.0f,0.0f,0.0f });
+	mFollowCamera.Initialize(mPlayer.GetPosition());
+
 
 }
 
@@ -80,4 +82,8 @@ void GameScene::Run(float dt) {
 
 	PlayerCommand cmd = mInputMapper.Make(mEngine->GetInput());
 	mPlayer.Update(cmd, dt);
+
+	mEngine->GetCamera().SetCameraPos(
+		mFollowCamera.Update(mPlayer.GetPosition())
+	);
 }

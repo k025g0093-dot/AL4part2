@@ -6,8 +6,8 @@ class Camera {
 public:
     Camera() {
         transform.scale = { 1.0f, 1.0f,  1.0f };
-        transform.rotate = { 0.05f, 0.0f,  0.0f };
-        transform.translate = { 0.0f, 0.3f, -9.0f };
+        transform.rotate = { 0.9f, 0.0f,  0.0f };
+        transform.translate = { 0.0f, 30.0f, -20.0f };
         mNearPlane = 0.1f;
         mFarPlane = 10000.0f;
     }
@@ -45,12 +45,17 @@ public:
     float GetNearPlane() const { return mNearPlane; }
     float GetFarPlane() const { return mFarPlane; }
 
+    Vector3 GetPosition()const { return transform.translate; }
+
     void SetNearPlane(float n) { mNearPlane = n; }
     void SetFarPlane(float f) { mFarPlane = f; }
 
+    void SetCameraPos(Vector3 cameraPos) { transform.translate = cameraPos; }
     TransformData transform;
 
+
 private:
+
 
     //Y軸に回転をさせる
     Matrix4x4 backToFrontMatrix = MakeRotateYMatrix(std::numbers::pi_v<float>);

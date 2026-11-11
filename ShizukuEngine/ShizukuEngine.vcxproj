@@ -151,6 +151,7 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\FollowCamera.cpp" />
     <ClCompile Include="Game\Fade.cpp" />
     <ClCompile Include="Game\GameScene.cpp" />
     <ClCompile Include="Game\Player\Player.cpp" />
@@ -198,6 +199,7 @@
     <ClCompile Include="Game\TitleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\FollowCamera.h" />
     <ClInclude Include="Game\Fade.h" />
     <ClInclude Include="Game\GameScene.h" />
     <ClInclude Include="Game\IScene.h" />
