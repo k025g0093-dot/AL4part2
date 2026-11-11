@@ -7,6 +7,12 @@ void GameScene::Initialize(ShizukuEngine* engine) {
 	mFade->Initialize(mEngine);
 	mFade->Start(Fade::Status::FadeIn, 1.0f);
 
+
+	//モデル読み込み
+	field = mEngine->LoadModel("resources/field/field.obj");
+	player = mEngine->LoadSkinnedModel("resources/Flair/Flair.dae");
+	dancce= mEngine->LoadAnimation("resources/Flair/Flair.dae", player);
+
 }
 
 void GameScene::Update(float dt) {
@@ -46,5 +52,22 @@ void GameScene::Update(float dt) {
 void GameScene::Draw() {
 
 	mFade->Draw();
+
+	mEngine->DrawSkinnedModel(
+		player,
+		dancce,
+		{ 0.0f, 0.0f, 0.0f },
+		{ 0.0f, 0.0f, 0.0f },
+		{ 1.0f, 1.0f, 1.0f },
+		{ 1.0f, 1.0f, 1.0f, 1.0f }
+	);
+
+	mEngine->DrawModel(
+		field,
+		{ 0,0,0 },
+		{ 0,0,0 },
+		{ 1,1,1 },
+		{ 1,1,1,1 }
+	);
 
 }

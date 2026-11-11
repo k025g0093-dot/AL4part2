@@ -24,8 +24,9 @@ private:
 
 	//素材（モデルど）int型で指定
 
-
-
+	int field = 0;
+	int player = 0;
+	int dancce = 0;
 	//ゲームの状態
 	bool isFinished = false;
 

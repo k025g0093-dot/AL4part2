@@ -76,6 +76,16 @@ void ChangeScene() {
 		}
 		break;
 	case Scene::kGame:
+
+		if (gameScene->IsFinished()) {
+			scene = Scene::kTitle;
+			delete gameScene;
+			gameScene = nullptr;
+
+			title = new TitleScene;
+			title->Initialize(engine);
+		}
+
 		break;
 	
 	default:
