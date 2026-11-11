@@ -13,6 +13,8 @@ void GameScene::Initialize(ShizukuEngine* engine) {
 	player = mEngine->LoadSkinnedModel("resources/Flair/Flair.dae");
 	dancce= mEngine->LoadAnimation("resources/Flair/Flair.dae", player);
 
+	mPlayer.Initialize(player, Vector3{ 0.0f,0.0f,0.0f });
+
 }
 
 void GameScene::Update(float dt) {
@@ -29,6 +31,8 @@ void GameScene::Update(float dt) {
 
 		break;
 	case Phese::kMain:
+
+		Run(dt);
 
 		if (mEngine->GetInput().GetKeyDown(VK_SPACE)) {
 			mFade->Start(Fade::Status::FadeOut, 1.0f);
@@ -56,8 +60,8 @@ void GameScene::Draw() {
 	mEngine->DrawSkinnedModel(
 		player,
 		dancce,
-		{ 0.0f, 0.0f, 0.0f },
-		{ 0.0f, 0.0f, 0.0f },
+		mPlayer.GetPosition(),
+		{ 0.0f, mPlayer.GetRotationY(), 0.0f},
 		{ 1.0f, 1.0f, 1.0f },
 		{ 1.0f, 1.0f, 1.0f, 1.0f }
 	);
@@ -70,4 +74,10 @@ void GameScene::Draw() {
 		{ 1,1,1,1 }
 	);
 
+}
+
+void GameScene::Run(float dt) {
+
+	PlayerCommand cmd = mInputMapper.Make(mEngine->GetInput());
+	mPlayer.Update(cmd, dt);
 }

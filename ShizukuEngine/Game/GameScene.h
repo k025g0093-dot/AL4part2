@@ -2,7 +2,8 @@
 #include "IScene.h"
 #include "../ShizukuEngine/ShizukuEngine.h"
 #include "Fade.h"
-
+#include "Player/Player.h"
+#include "Player/PlayerInputMapper.h"
 class GameScene : public IScene
 {
 
@@ -15,12 +16,18 @@ public:
 	bool IsFinished()const { return isFinished; }
 
 private:
+	void Run(float dt);
+
+private:
 
 	ShizukuEngine* mEngine = nullptr;
 	
 	Phese mPhese = Phese::kFadeIn;
 
 	Fade* mFade = nullptr;
+
+	Player mPlayer;
+	PlayerInputMapper mInputMapper;
 
 	//素材（モデルど）int型で指定
 

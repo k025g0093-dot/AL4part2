@@ -114,6 +114,9 @@
       <EnableSegmentHeap>true</EnableSegmentHeap>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
     </Manifest>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Development|x64'">
     <ClCompile>
@@ -143,10 +146,15 @@
       <EnableSegmentHeap>true</EnableSegmentHeap>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
     </Manifest>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Game\Fade.cpp" />
     <ClCompile Include="Game\GameScene.cpp" />
+    <ClCompile Include="Game\Player\Player.cpp" />
+    <ClCompile Include="Game\Player\PlayerInputMapper.cpp" />
     <ClCompile Include="ShizukuEngine\Engine\GUI\ImGuiContentBrowser.cpp" />
     <ClCompile Include="ShizukuEngine\Engine\Model\3DAnimation\Animator.cpp" />
     <ClCompile Include="ShizukuEngine\Engine\Model\3DAnimation\Animation.cpp" />
@@ -193,6 +201,9 @@
     <ClInclude Include="Game\Fade.h" />
     <ClInclude Include="Game\GameScene.h" />
     <ClInclude Include="Game\IScene.h" />
+    <ClInclude Include="Game\Player\Player.h" />
+    <ClInclude Include="Game\Player\PlayerCommand.h" />
+    <ClInclude Include="Game\Player\PlayerInputMapper.h" />
     <ClInclude Include="ShizukuEngine\Engine\GUI\ImGuiContentBrowser.h" />
     <ClInclude Include="ShizukuEngine\Engine\Model\3DAnimation\Animator.h" />
     <ClInclude Include="ShizukuEngine\Engine\Model\3DAnimation\Animation.h" />

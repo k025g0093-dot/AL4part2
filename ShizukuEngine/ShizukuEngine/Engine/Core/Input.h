@@ -57,7 +57,7 @@ public:
 	//マウスのY座標を取得する関数
 	int GetMouseDeltaY() const { return mMouseDeltaY; }
 	//マウスのボタンが押されているかを確認する関数（0:左ボタン、1:右ボタン、2:中ボタン）
-	bool GetMouseButton(int button) {
+	bool GetMouseButton(int button) const{
 		int vKey = (button == 0) ? VK_LBUTTON : (button == 1) ? VK_RBUTTON : VK_MBUTTON;
 		return (mKeysCurr[vKey] & 0x80) != 0;
 	}
