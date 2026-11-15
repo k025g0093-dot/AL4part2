@@ -126,13 +126,24 @@ void ShizukuEngine::OnFileDropped(const std::wstring& path) {
 	}
 }
 
-int ShizukuEngine::CreateEmitter(const Emitter& emitter, int modelIndex,Vector4 corol,bool isFixedColor) {
+int ShizukuEngine::CreateEmitter(const Emitter& emitter, int modelIndex,Vector4 color,bool isFixedColor) {
 
 	auto particleEmitter = std::make_unique<ParticleEmitter>();
-	particleEmitter->CreateEmitter(emitter, corol,isFixedColor);
+	particleEmitter->CreateEmitter(emitter, color,isFixedColor);
 
 	mEmitters.push_back({ std::move(particleEmitter),modelIndex });
 	return static_cast<int>(mEmitters.size()) - 1;
+}
+
+int ShizukuEngine::CreateGPUEmitter(const Emitter& emitter, int modelIndex,Vector4 color,bool isFixedColor) {
+
+	auto particleEmitter = std::make_unique<GPUParticleEmitter>();
+	MeshModel* model = mModelManager.Get(modelIndex);
+	if (model == nullptr) {return -1;}//モデルが見つからない場合はリターンする
+	particleEmitter->CreateEmitter(emitter, mDX12Context.GetDevice(),&mTextureManager, model->GetTextureIndex(), model,color, isFixedColor);
+
+	mGPUEmitters.push_back(std::move(particleEmitter));
+	return static_cast<int>(mGPUEmitters.size()) - 1;
 }
 
 
@@ -208,12 +219,15 @@ void ShizukuEngine::PostDraw()
 	mModelWindow.update(&mModelManager);
 	mContentBrowser.update(&mTextureManager);
 
+	for (size_t i = 0; i < mEmitters.size();i++) {
+		mImGuiParticleEmitter.Update(mEmitters[i].modelIndex,mEmitters[i].emitter.get());
+	}
+
 	mViewportWindow.update(&mRenderTexture,&mEntityManager,&mContentBrowser);
 	mPlayViewportWindow.update(&mRenderTexture);
 
 	DebugStats stats{};
-	//stats.drawRequestCount = mRenderRequests.GetLastRequestCount();
-	//stats.drawCallCount = mRenderRequests.GetLastDrawCallCount();
+
 	stats.textureCount = mTextureManager.GetTextureCount();
 	stats.modelCount = mModelManager.GetModelCount();
 	stats.lightCount = mLightManager.GetActiveLightCount();

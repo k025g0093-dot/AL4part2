@@ -160,6 +160,8 @@
     <ClCompile Include="ShizukuEngine\Engine\Model\3DAnimation\Animator.cpp" />
     <ClCompile Include="ShizukuEngine\Engine\Model\3DAnimation\Animation.cpp" />
     <ClCompile Include="ShizukuEngine\Engine\Model\3DAnimation\Bone.cpp" />
+    <ClCompile Include="ShizukuEngine\Engine\Particle\GPUParticleEmitter.cpp" />
+    <ClCompile Include="ShizukuEngine\Engine\Particle\GPUParticleManager.cpp" />
     <ClCompile Include="ShizukuEngine\Entity\EntityManager.cpp" />
     <ClCompile Include="ShizukuEngine\Entity\Component.cpp" />
     <ClCompile Include="ShizukuEngine\Entity\Entity.cpp" />
@@ -210,6 +212,9 @@
     <ClInclude Include="ShizukuEngine\Engine\Model\3DAnimation\Animator.h" />
     <ClInclude Include="ShizukuEngine\Engine\Model\3DAnimation\Animation.h" />
     <ClInclude Include="ShizukuEngine\Engine\Model\3DAnimation\Bone.h" />
+    <ClInclude Include="ShizukuEngine\Engine\Particle\GPUParticleEmitter.h" />
+    <ClInclude Include="ShizukuEngine\Engine\Particle\GPUParticleManager.h" />
+    <ClInclude Include="ShizukuEngine\Engine\Particle\ParticleTypes.h" />
     <ClInclude Include="ShizukuEngine\Entity\EntityManager.h" />
     <ClInclude Include="ShizukuEngine\Entity\Component.h" />
     <ClInclude Include="ShizukuEngine\Entity\Entity.h" />
@@ -318,6 +323,11 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Development|x64'">Vertex</ShaderType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="shaders\SkinnedShadow.VS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Development|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>

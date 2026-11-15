@@ -6,6 +6,8 @@
 
 #ifdef USE_IMGUI
 
+
+
 class TextureManager;
 
 class ImGuiContentBrowser:public ImGuiUIWindow
@@ -25,5 +27,6 @@ private://変数
 
 	TextureManager* mTextureManager;
 };
-
 #endif // USE_IMGUI
+
+

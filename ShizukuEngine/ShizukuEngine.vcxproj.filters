@@ -234,6 +234,12 @@
     <ClCompile Include="Game\FollowCamera.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="ShizukuEngine\Engine\Particle\GPUParticleManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ShizukuEngine\Engine\Particle\GPUParticleEmitter.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -407,6 +413,15 @@
     <ClInclude Include="Game\FollowCamera.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="ShizukuEngine\Engine\Particle\GPUParticleEmitter.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShizukuEngine\Engine\Particle\GPUParticleManager.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ShizukuEngine\Engine\Particle\ParticleTypes.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include=".editoroconfig">
@@ -444,5 +459,6 @@
     <FxCompile Include="shaders\SkinnedObject3d.VS.hlsl" />
     <FxCompile Include="shaders\Particle.VS.hlsl" />
     <FxCompile Include="shaders\Particle.PS.hlsl" />
+    <FxCompile Include="shaders\SkinnedShadow.VS.hlsl" />
   </ItemGroup>
 </Project>

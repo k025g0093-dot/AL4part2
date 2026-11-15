@@ -13,7 +13,7 @@ public:
     }
 
     Matrix4x4 GetViewMatrix() {
-         cameraMatrix = MakeAffineMatrix(
+        cameraMatrix = MakeAffineMatrix(
             transform.scale, transform.rotate, transform.translate);
         return Inverse(cameraMatrix);
     }
@@ -23,7 +23,7 @@ public:
     }
 
     Matrix4x4 GetViewProjectionMatrix(float width, float height) {
-         cameraMatrix = MakeAffineMatrix(
+        cameraMatrix = MakeAffineMatrix(
             transform.scale, transform.rotate, transform.translate);
         Matrix4x4 viewMatrix = Inverse(cameraMatrix);
         Matrix4x4 projMatrix = MakePerspectiveFovMatrix(
@@ -51,6 +51,8 @@ public:
     void SetFarPlane(float f) { mFarPlane = f; }
 
     void SetCameraPos(Vector3 cameraPos) { transform.translate = cameraPos; }
+    void SetCameraRot(Vector3 cameraRot) { transform.rotate = cameraRot; }
+
     TransformData transform;
 
 
