@@ -10,9 +10,19 @@ void Player::Initialize(int model, const Vector3& position) {
 
 void Player::Update(const PlayerCommand& cmd, float dt) {
 
+	mShotThisFrame = false;
+
 	mPosition += cmd.move * (mSpeed * dt);
 	mPosition.x = std::clamp(mPosition.x, -kFieldHalf, kFieldHalf);
 	mPosition.z = std::clamp(mPosition.z, -kFieldHalf, kFieldHalf);
 
-}
+	if (mFireTimer > 0) {
+		mFireTimer--;
+	}
 
+	if (cmd.isFire) {
+		mShotThisFrame = true;
+		mFireTimer = dt;
+	}
+
+}

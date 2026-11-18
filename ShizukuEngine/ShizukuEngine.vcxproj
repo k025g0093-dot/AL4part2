@@ -151,11 +151,13 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Enemy\Enemy.cpp" />
     <ClCompile Include="Game\FollowCamera.cpp" />
     <ClCompile Include="Game\Fade.cpp" />
     <ClCompile Include="Game\GameScene.cpp" />
     <ClCompile Include="Game\Player\Player.cpp" />
     <ClCompile Include="Game\Player\PlayerInputMapper.cpp" />
+    <ClCompile Include="Game\Player\PlayerBullet.cpp" />
     <ClCompile Include="ShizukuEngine\Engine\GUI\ImGuiContentBrowser.cpp" />
     <ClCompile Include="ShizukuEngine\Engine\Model\3DAnimation\Animator.cpp" />
     <ClCompile Include="ShizukuEngine\Engine\Model\3DAnimation\Animation.cpp" />
@@ -201,6 +203,7 @@
     <ClCompile Include="Game\TitleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Enemy\Enemy.h" />
     <ClInclude Include="Game\FollowCamera.h" />
     <ClInclude Include="Game\Fade.h" />
     <ClInclude Include="Game\GameScene.h" />
@@ -208,6 +211,7 @@
     <ClInclude Include="Game\Player\Player.h" />
     <ClInclude Include="Game\Player\PlayerCommand.h" />
     <ClInclude Include="Game\Player\PlayerInputMapper.h" />
+    <ClInclude Include="Game\Player\PlayerBullet.h" />
     <ClInclude Include="ShizukuEngine\Engine\GUI\ImGuiContentBrowser.h" />
     <ClInclude Include="ShizukuEngine\Engine\Model\3DAnimation\Animator.h" />
     <ClInclude Include="ShizukuEngine\Engine\Model\3DAnimation\Animation.h" />

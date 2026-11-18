@@ -1,5 +1,7 @@
 #pragma once
 #include "PlayerCommand.h"
+#include "PlayerBullet.h"
+#include <list>
 
 class Player
 {
@@ -9,6 +11,7 @@ public:
 
 	void Update(const PlayerCommand& cmd, float dt);
 
+
 	const Vector3& GetPosition() const { return mPosition; }
 	float GetRotationY() const { return mRotationY; }
 	int GetModel() const { return mModel; }
@@ -17,6 +20,8 @@ public:
 private:
 
 	int mModel = -1;
+	int mBulletModel = -1;
+
 	Vector3 mPosition{};
 	float mRotationY = 0.0f;
 
