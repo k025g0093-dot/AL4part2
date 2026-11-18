@@ -23,15 +23,16 @@ public:
 			mMouseDeltaY = 0;
 		}
 
-		if (!mIsCursorFree) {
-			// --- マウス ---
-			GetCursorPos(&mPoint);
 
-			mMouseDeltaX = mPoint.x - mMouseX;
-			mMouseDeltaY = mPoint.y - mMouseY;
+		GetCursorPos(&mPoint);
 
-			RecenterCursor();
-		}
+		mMouseDeltaX = mPoint.x - mMouseX;
+		mMouseDeltaY = mPoint.y - mMouseY;
+
+		//RecenterCursor();
+
+		mMouseX = mPoint.x;
+		mMouseY = mPoint.y;
 
 		// --- ゲームパッド (追加) ---
 		mPadPrev = mPadCurr; // 前フレームの状態を保存
@@ -165,4 +166,4 @@ private:
 	bool mIsPadConnected = false;
 	XINPUT_GAMEPAD mPadCurr = { 0 };
 	XINPUT_GAMEPAD mPadPrev = { 0 };
-};   
+};
