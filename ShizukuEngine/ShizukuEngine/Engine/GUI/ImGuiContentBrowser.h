@@ -27,6 +27,5 @@ private://変数
 
 	TextureManager* mTextureManager;
 };
+
 #endif // USE_IMGUI
-
-

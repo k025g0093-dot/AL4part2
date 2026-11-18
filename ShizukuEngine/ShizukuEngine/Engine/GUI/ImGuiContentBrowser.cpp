@@ -3,8 +3,6 @@
 
 #ifdef USE_IMGUI
 
-
-
 static const std::filesystem::path sAssetsPath = "resources";
 
 ImGuiContentBrowser::ImGuiContentBrowser()

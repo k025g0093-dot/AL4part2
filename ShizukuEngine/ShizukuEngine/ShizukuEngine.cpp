@@ -264,7 +264,7 @@ void ShizukuEngine::PostDraw()
 	mImGuiManager.RenderPlatformWindows();
 #endif // USE_IMGUI
 
-	//mClock.UpdateFixFPS();
+	mClock.UpdateFixFPS();
 
 }
 
