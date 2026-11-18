@@ -13,7 +13,7 @@ void GameScene::Initialize(ShizukuEngine* engine) {
 	player = mEngine->LoadSkinnedModel("resources/Flair/Flair.dae");
 	dancce = mEngine->LoadAnimation("resources/Flair/Flair.dae", player);
 
-	bulletModel = mEngine->LoadModel("resources/plane.gltf");
+	bulletModel = mEngine->LoadModel("resources/bullet/bullet.fbx");
 
 	mPlayer.Initialize(player, Vector3{ 0.0f,0.0f,0.0f });
 	mFollowCamera.Initialize(mPlayer.GetPosition());
