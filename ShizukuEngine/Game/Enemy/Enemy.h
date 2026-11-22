@@ -35,7 +35,7 @@ private:
 	float mFireInterval = 0.1f;
 	float mFireTimer = 0.0f;
 	bool mIsAlive = true;
-	bool mIsSpwan = false;
+	bool mIsSpwan = true;
 	static constexpr float kFieldHalf = 99.0f; // 壁の内側が ±100、自機の半径ぶん内側
 	float mDt{};
 

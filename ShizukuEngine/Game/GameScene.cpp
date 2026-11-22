@@ -93,7 +93,7 @@ void GameScene::Run(float dt) {
 
 	if(mEnemy.IsSpwanEnemy()){
 		Enemy* newEnemy = new Enemy();
-		newEnemy->Initialize(enemyMode, dancce,mEnemy.GetPosition());
+		newEnemy->Initialize(enemyMode, -1,mEnemy.GetPosition());
 		allyEnemys.push_back(newEnemy);
 	}
 

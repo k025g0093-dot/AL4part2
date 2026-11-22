@@ -29,9 +29,8 @@ void Enemy::SpwanEnemy(){
 }
 
 void Enemy::Draw(ShizukuEngine*engine) {
-	engine->DrawSkinnedModel(
+	engine->DrawModel(
 		mModel,
-		mAnimation,
 		mPosition,
 		{ 0.0f, mRotationY, 0.0f },
 		{ 1.0f, 1.0f, 1.0f },
