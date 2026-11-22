@@ -158,10 +158,12 @@
     <ClCompile Include="Game\Player\Player.cpp" />
     <ClCompile Include="Game\Player\PlayerInputMapper.cpp" />
     <ClCompile Include="Game\Player\PlayerBullet.cpp" />
+    <ClCompile Include="ShizukuEngine\Engine\Collision\BoneCollider.cpp" />
     <ClCompile Include="ShizukuEngine\Engine\GUI\ImGuiContentBrowser.cpp" />
     <ClCompile Include="ShizukuEngine\Engine\Model\3DAnimation\Animator.cpp" />
     <ClCompile Include="ShizukuEngine\Engine\Model\3DAnimation\Animation.cpp" />
     <ClCompile Include="ShizukuEngine\Engine\Model\3DAnimation\Bone.cpp" />
+    <ClCompile Include="ShizukuEngine\Engine\Model\Primitive\Line.cpp" />
     <ClCompile Include="ShizukuEngine\Engine\Particle\GPUParticleEmitter.cpp" />
     <ClCompile Include="ShizukuEngine\Engine\Particle\GPUParticleManager.cpp" />
     <ClCompile Include="ShizukuEngine\Entity\EntityManager.cpp" />
@@ -204,6 +206,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Enemy\Enemy.h" />
+    <ClInclude Include="Game\Enemy\EnemyCommand.h" />
     <ClInclude Include="Game\FollowCamera.h" />
     <ClInclude Include="Game\Fade.h" />
     <ClInclude Include="Game\GameScene.h" />
@@ -212,10 +215,13 @@
     <ClInclude Include="Game\Player\PlayerCommand.h" />
     <ClInclude Include="Game\Player\PlayerInputMapper.h" />
     <ClInclude Include="Game\Player\PlayerBullet.h" />
+    <ClInclude Include="ShizukuEngine\Engine\Collision\BoneCollider.h" />
+    <ClInclude Include="ShizukuEngine\Engine\Collision\Sapaes.h" />
     <ClInclude Include="ShizukuEngine\Engine\GUI\ImGuiContentBrowser.h" />
     <ClInclude Include="ShizukuEngine\Engine\Model\3DAnimation\Animator.h" />
     <ClInclude Include="ShizukuEngine\Engine\Model\3DAnimation\Animation.h" />
     <ClInclude Include="ShizukuEngine\Engine\Model\3DAnimation\Bone.h" />
+    <ClInclude Include="ShizukuEngine\Engine\Model\Primitive\Line.h" />
     <ClInclude Include="ShizukuEngine\Engine\Particle\GPUParticleEmitter.h" />
     <ClInclude Include="ShizukuEngine\Engine\Particle\GPUParticleManager.h" />
     <ClInclude Include="ShizukuEngine\Engine\Particle\ParticleTypes.h" />

@@ -1,4 +1,5 @@
 #include "ShizukuEngine.h"
+#include "Collision/BoneCollider.h"
 
 using namespace std;
 //インスタンス初期化
@@ -19,7 +20,7 @@ ShizukuEngine::ShizukuEngine(int width, int Height, wstring WinName) {
 }
 
 //初期化関数
-void ShizukuEngine::Initialize(int width, int height) {
+void ShizukuEngine::Initialize(int width, int Height) {
 
 	// COM は Windows 機能を使うために先に初期化しておく
 	HRESULT hrCo = CoInitializeEx(0, COINIT_MULTITHREADED);
@@ -51,20 +52,20 @@ void ShizukuEngine::Initialize(int width, int height) {
 		mDX12Context.GetDevice(),
 		&mTextureManager,
 		width,
-		height
+		Height
 	);
 
 	//レンダーリクエストの初期化
-	mRenderRequests.CreateOrthographicMatrix(width, height);
+	mRenderRequests.CreateOrthographicMatrix(width, Height);
 	mRenderRequests.InitRender(
 		mDX12Context.GetDevice(),
 		&mTextureManager,
 		&mLightManager,
 		&mDX12Context,
 		&mRenderTexture);
+	
+	//mInput.SetWindou(mWinApp.GetHwnd());
 
-	//マウスの中央を求める
-	mInput.SetWindou(mWinApp.GetHwnd());
 
 	//ImGuiの初期化
 #ifdef USE_IMGUI
@@ -176,6 +177,7 @@ int ShizukuEngine::LoadAnimation(const std::string& animationPath, int skinnedMo
 }
 
 
+
 void ShizukuEngine::Update() {
 
 	mClock.Update();
@@ -264,7 +266,6 @@ void ShizukuEngine::PostDraw()
 	mImGuiManager.RenderPlatformWindows();
 #endif // USE_IMGUI
 
-	//FPS固定
 	mClock.UpdateFixFPS();
 
 }
@@ -321,6 +322,18 @@ void ShizukuEngine::DrawSphere
 	req.lightId = 1;
 	req.isMesh = false;//メッシュかの確認
 	mRenderRequests.DrawRequestsSubmission(req);
+}
+#pragma endregion
+
+#pragma region 線描画関数
+
+void ShizukuEngine::DrawLine
+(
+	const Vector3& start,
+	Vector3 end,
+	const Vector4 color
+) {
+	mRenderRequests.AddLine(start, end, color);
 }
 #pragma endregion
 
@@ -472,3 +485,39 @@ void ShizukuEngine::DrawEmitter()
 	}
 }
 #pragma endregion
+
+
+#pragma region 当たり判定作成用関数
+
+std::vector<OBB> ShizukuEngine::CreateAnimationModelOBBsCollision(
+	int modelIndex, int boneSlot,
+	const Vector3& pos, const Vector3& rot, const Vector3& scale) {
+
+	/*スキン付きモデルを受け取る*/
+	SkinnedModel* model = mModelManager.GetSkinned(modelIndex);
+
+	//if (!model) {return;}
+	//if (boneSlot < 0) { return; }
+
+	/*ワールドマトリックスの作成*/
+	Matrix4x4 worldMat = MakeAffineMatrix(scale, rot, pos);
+
+	std::vector<OBB>obb{};
+	/*ボーンにつけたOBBを更新する*/
+	obb = UpdateAnimationBoneOBBs(*model, *mAnimator[boneSlot], worldMat);
+	return obb;
+}
+
+#pragma endregion 
+
+#pragma region 当たり判定関数
+
+bool ShizukuEngine::IsAnimationOBBsToAnimationOBBs(const std::vector<OBB>& obb1, const std::vector<OBB>& obb2) {
+	return IsAnimationOBBsToOBBsCollision(obb1, obb2);
+}
+
+bool ShizukuEngine::IsAnimationOBBToOBB(const std::vector<OBB>& obb1, const OBB& obb2) {
+	return IsAnimationOBBsToOBBCollision(obb1, obb2);
+}
+
+#pragma endregion 

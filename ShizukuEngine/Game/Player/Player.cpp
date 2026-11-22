@@ -1,10 +1,12 @@
 #include "Player.h"
+#include "../../ShizukuEngine/ShizukuEngine.h"
 #include <algorithm>
 #include <cmath>
 
-void Player::Initialize(int model, const Vector3& position) {
+void Player::Initialize(int model, int animationModel,const Vector3& position) {
 
 	mModel = model;
+	mAnimation = animationModel;
 	mPosition = position;
 }
 
@@ -25,4 +27,16 @@ void Player::Update(const PlayerCommand& cmd, float dt) {
 		mFireTimer = dt;
 	}
 
+}
+
+
+void Player::Draw(ShizukuEngine* engine) {
+		engine->DrawSkinnedModel(
+			mModel,
+			mAnimation,
+			mPosition ,
+			{ 0.0f, mRotationY, 0.0f },
+			{ 1.0f, 1.0f, 1.0f },
+			{ 1.0f, 1.0f, 1.0f, 1.0f }
+		);
 }

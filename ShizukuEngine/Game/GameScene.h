@@ -2,9 +2,15 @@
 #include "IScene.h"
 #include "../ShizukuEngine/ShizukuEngine.h"
 #include "Fade.h"
+/*プレイヤー関係*/
 #include "Player/Player.h"
 #include "Player/PlayerBullet.h"
 #include "Player/PlayerInputMapper.h"
+
+/*敵関係*/
+#include "Enemy/Enemy.h"
+
+/*カメラ*/
 #include "FollowCamera.h"
 
 class GameScene : public IScene
@@ -34,6 +40,11 @@ private:
 	Player mPlayer;
 	std::list<PlayerBullet*>allyBullets;
 	PlayerInputMapper mInputMapper;
+
+	Enemy mEnemy;
+	std::list<Enemy*>allyEnemys;
+
+
 	FollowCamera mFollowCamera;
 
 
@@ -44,6 +55,8 @@ private:
 	int player = 0;
 	int dancce = 0;
 	int bulletModel = 0;
+	int enemyMode = 0;
+
 	//ゲームの状態
 	bool isFinished = false;
 

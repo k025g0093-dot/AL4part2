@@ -14,8 +14,9 @@ void GameScene::Initialize(ShizukuEngine* engine) {
 	dancce = mEngine->LoadAnimation("resources/Flair/Flair.dae", player);
 
 	bulletModel = mEngine->LoadModel("resources/bullet/bullet.fbx");
+	enemyMode = mEngine->LoadModel("resources/enemy/enemy.fbx");
 
-	mPlayer.Initialize(player, Vector3{ 0.0f,0.0f,0.0f });
+	mPlayer.Initialize(player,dancce, Vector3{ 0.0f,0.0f,0.0f });
 	mFollowCamera.Initialize(mPlayer.GetPosition());
 
 
@@ -61,22 +62,19 @@ void GameScene::Draw() {
 
 	mFade->Draw();
 
-	mEngine->DrawModel(field,{},{},{ 1,1,1 },{ 1,1,1,1 });
+	mEngine->DrawModel(field, {}, {}, { 1,1,1 }, { 1,1,1,1 });
 
-	mEngine->DrawSkinnedModel(
-		player,
-		dancce,
-		mPlayer.GetPosition(),
-		{ 0.0f, mPlayer.GetRotationY(), 0.0f },
-		{ 1.0f, 1.0f, 1.0f },
-		{ 1.0f, 1.0f, 1.0f, 1.0f }
-	);
+	mPlayer.Draw(mEngine);
 
 	for (PlayerBullet* bullet : allyBullets) {
 		mEngine->DrawModel(
 			bulletModel, bullet->GetPosition(),
 			{ 0.0f, bullet->GetRotationY(), 0.0f },
-			{1,1,1}, {1,1,1,1});
+			{ 1,1,1 }, { 1,1,1,1 });
+	}
+
+	for (Enemy* enemy : allyEnemys) {
+		enemy->Draw(mEngine);
 	}
 
 
@@ -89,14 +87,21 @@ void GameScene::Run(float dt) {
 
 	if (mPlayer.IsShotThisFrame()) {
 		PlayerBullet* newBullet = new PlayerBullet();
-
 		newBullet->Initialize(bulletModel, mPlayer.GetPosition(), cmd.aim);
 		AddAllyBullet(newBullet);
 	}
 
+	if(mEnemy.IsSpwanEnemy()){
+		Enemy* newEnemy = new Enemy();
+		newEnemy->Initialize(enemyMode, dancce,mEnemy.GetPosition());
+		allyEnemys.push_back(newEnemy);
+	}
+
+
 	mEngine->GetCamera().SetCameraPos(
 		mFollowCamera.Update(mPlayer.GetPosition())
 	);
+
 
 	allyBullets.remove_if([](PlayerBullet* bullet) {
 		if (!bullet->IsAcctiveFrame()) {
@@ -104,12 +109,23 @@ void GameScene::Run(float dt) {
 			return true;
 		}
 		return false;
-	});
+		});
 
+	allyEnemys.remove_if([](Enemy* enemy) {
+		if (!enemy->IsAlive()) {
+			delete enemy;
+			return true;
+		}return false;
+		});
 
 
 	for (PlayerBullet* bullet : allyBullets) {
 		bullet->Update(dt);
+	}
+
+	for (Enemy* enemy : allyEnemys) {
+		EnemyCommand cmd;
+		enemy->Update(cmd,dt);
 	}
 
 }

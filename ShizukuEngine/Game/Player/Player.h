@@ -3,14 +3,16 @@
 #include "PlayerBullet.h"
 #include <list>
 
+class ShizukuEngine;
 class Player
 {
 public:
 
-	void Initialize(int model, const Vector3& position);
+	void Initialize(int model,int animationModel, const Vector3& position);
 
 	void Update(const PlayerCommand& cmd, float dt);
 
+	void Draw(ShizukuEngine* engine);
 
 	const Vector3& GetPosition() const { return mPosition; }
 	float GetRotationY() const { return mRotationY; }
@@ -21,6 +23,7 @@ private:
 
 	int mModel = -1;
 	int mBulletModel = -1;
+	int mAnimation = -1;
 
 	Vector3 mPosition{};
 	float mRotationY = 0.0f;
