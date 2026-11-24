@@ -28,6 +28,7 @@ private:
 
 	void AddAllyBullet(PlayerBullet* bullet);
 	void Run(float dt);
+	void SpwanEnemy();
 
 private:
 
@@ -42,7 +43,7 @@ private:
 	PlayerInputMapper mInputMapper;
 
 	Enemy mEnemy;
-	std::list<Enemy*>allyEnemys;
+	std::vector<Enemy>allyEnemys;
 
 
 	FollowCamera mFollowCamera;
@@ -60,5 +61,10 @@ private:
 	//ゲームの状態
 	bool isFinished = false;
 
+	/*エネミーの出現カウント*/
+	int mSpawnCount = 0;
+	float mSpawnTimer = 0.0f;
+	float mSpawnInterval = 2.0f;
+	const int mMaxEnemyCount = 40;
 };
 

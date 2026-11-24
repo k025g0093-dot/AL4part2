@@ -6,9 +6,24 @@ class ShizukuEngine;
 class Enemy
 {
 public:
-	void Initialize(int model, int animationModel, const Vector3& position);
 
-	void Update(const EnemyCommand& cmd, float dt);
+	// 敵の種類
+	enum class Type {
+		kChase,   // 近距離型
+		kRanged   // 遠距離型
+	};
+
+	// 弾
+	struct Bullet {
+		Vector3 position{};
+		Vector3 direction{};
+		float speed = 15.0f;
+		float lifeTime = 5.0f;
+	};
+
+	void Initialize(int model, int animationModel, const Vector3& position,Type enemyType);
+
+	void Update(const Vector3 &playerPosition, float dt);
 
 	void Draw(ShizukuEngine* engine);
 
@@ -20,7 +35,15 @@ public:
 
 private:
 
-	void SpwanEnemy();
+	void UpdateChase(
+		const Vector3& playerPosition,
+		float dt
+	);
+
+	void UpdateRanged(
+		const Vector3& playerPosition,
+		float dt
+	);
 
 private:
 	
@@ -30,8 +53,10 @@ private:
 
 	Vector3 mPosition{};
 	float mRotationY = 0.0f;
+	Type mType{};
 
-	float mSpeed = 10.0f;
+
+	float mSpeed={};
 	float mFireInterval = 0.1f;
 	float mFireTimer = 0.0f;
 	bool mIsAlive = true;

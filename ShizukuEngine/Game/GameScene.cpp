@@ -17,6 +17,10 @@ void GameScene::Initialize(ShizukuEngine* engine) {
 	bulletModel = mEngine->LoadModel("resources/bullet/bullet.fbx");
 	enemyMode = mEngine->LoadModel("resources/enemy/enemy.fbx");
 
+	allyEnemys.clear();
+
+	mSpawnCount = 0;
+
 	mPlayer.Initialize(player,dancce, Vector3{ 0.0f,0.0f,0.0f });
 	mFollowCamera.Initialize(mPlayer.GetPosition());
 
@@ -74,8 +78,8 @@ void GameScene::Draw() {
 			{ 1,1,1 }, { 1,1,1,1 });
 	}
 
-	for (Enemy* enemy : allyEnemys) {
-		enemy->Draw(mEngine);
+	for (Enemy& enemy : allyEnemys) {
+		enemy.Draw(mEngine);
 	}
 
 
@@ -92,13 +96,6 @@ void GameScene::Run(float dt) {
 		AddAllyBullet(newBullet);
 	}
 
-	if(mEnemy.IsSpwanEnemy()){
-		Enemy* newEnemy = new Enemy();
-		newEnemy->Initialize(enemyMode, -1,mEnemy.GetPosition());
-		allyEnemys.push_back(newEnemy);
-	}
-
-
 	mEngine->GetCamera().SetCameraPos(
 		mFollowCamera.Update(mPlayer.GetPosition())
 	);
@@ -112,21 +109,20 @@ void GameScene::Run(float dt) {
 		return false;
 		});
 
-	allyEnemys.remove_if([](Enemy* enemy) {
-		if (!enemy->IsAlive()) {
-			delete enemy;
-			return true;
-		}return false;
-		});
-
-
 	for (PlayerBullet* bullet : allyBullets) {
 		bullet->Update(dt);
 	}
 
-	for (Enemy* enemy : allyEnemys) {
-		EnemyCommand cmd;
-		enemy->Update(cmd,dt);
+	for (Enemy& enemy : allyEnemys) {
+		enemy.Update(mPlayer.GetPosition(), dt);
+	}
+
+	mSpawnTimer += dt;
+	if (mSpawnTimer >= mSpawnInterval) {
+		mSpawnTimer = 0.0f;
+		if (allyEnemys.size() < mMaxEnemyCount) {
+			SpwanEnemy();
+		}
 	}
 
 }
@@ -135,3 +131,45 @@ void GameScene::AddAllyBullet(PlayerBullet* bullet) {
 	allyBullets.push_back(bullet);
 }
 
+void GameScene::SpwanEnemy() {
+
+	Vector3 spawnPosition{};
+
+	Enemy::Type type = Enemy::Type::kChase;
+
+	switch (mSpawnCount%4)
+	{
+	case 0:
+		spawnPosition = { 50.0f,0.0f,50.0f };
+		break;
+	case 1:
+		spawnPosition = { -50.0f,0.0f,50.0f };
+		break;
+	case 2:
+		spawnPosition = { 50.0f,0.0f,-50.0f };
+		break;
+	case 3:
+		spawnPosition = { -50.0f,0.0f,-50.0f };
+		break;
+	default:
+		break;
+	}
+
+	if (mSpawnCount % 5 == 1) {
+		type = Enemy::Type::kRanged;
+	}
+
+	// ザコ敵生成
+	Enemy newEnemy;
+
+	newEnemy.Initialize(
+		enemyMode, -1,
+		spawnPosition,
+		type
+	);
+
+	allyEnemys.push_back(newEnemy);
+
+	mSpawnCount++;
+
+}
