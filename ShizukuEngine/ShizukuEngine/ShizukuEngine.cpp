@@ -63,8 +63,8 @@ void ShizukuEngine::Initialize(int width, int Height) {
 		&mLightManager,
 		&mDX12Context,
 		&mRenderTexture);
-	
-	//mInput.SetWindou(mWinApp.GetHwnd());
+
+	mInput.SetWindou(mWinApp.GetHwnd());
 
 
 	//ImGuiの初期化
@@ -81,6 +81,7 @@ void ShizukuEngine::Initialize(int width, int Height) {
 	);
 #endif // USE_IMGUI
 
+	mSound = new Sound;
 
 #ifdef _DEBUG
 	mDebugLayer.SetupInfoQueue(mDX12Context.GetDevice());
@@ -101,6 +102,14 @@ int ShizukuEngine::LoadModel(const std::string& filePath) {
 int ShizukuEngine::LoadSkinnedModel(const std::string& filePath) {
 	//スキン読み込み
 	return mModelManager.LoadSkinnedModel(filePath);
+}
+
+SoundData ShizukuEngine::LoadSound(const char* filePath) {
+	return mSound->SoundLoad(filePath);
+}
+
+void ShizukuEngine::SoundPlay(SoundData soundData) {
+	mSound->SoundPlayer(soundData);
 }
 
 void ShizukuEngine::OnFileDropped(const std::wstring& path) {
@@ -166,17 +175,25 @@ int ShizukuEngine::LoadAnimation(const std::string& animationPath, int skinnedMo
 	auto animationModel = std::make_unique<Animation>();
 	animationModel->Initialize(animationPath, model);
 	mAnimations.push_back(std::move(animationModel));
-
-	auto animator = std::make_unique<Animator>();
-	animator->Initialize(mAnimations.back().get());
-	mAnimator.push_back(std::move(animator));
-
-	mRenderRequests.EnsureSkinnedCapacity(static_cast<int>(mAnimator.size()));
-
 	return static_cast<int>(mAnimations.size()) - 1;
 }
 
 
+int ShizukuEngine::CreateAnimator(int animation) {
+	if (animation < 0) { return -1; }
+	auto animator = std::make_unique<Animator>();
+	animator->Initialize(mAnimations[animation].get());
+	mAnimator.push_back(std::move(animator));
+
+	mRenderRequests.EnsureSkinnedCapacity(static_cast<int>(mAnimator.size()));
+	return static_cast<int>(mAnimator.size()) - 1;
+}
+
+void ShizukuEngine::ChangeAnimation(int animators,int animation, bool isRooped) {
+	
+	if (animators < 0 || animators >= (int)mAnimator.size()) {return ;}
+	mAnimator[animators]->PlayAnimation(mAnimations[animation].get(), isRooped);
+}
 
 void ShizukuEngine::Update() {
 
@@ -496,8 +513,8 @@ std::vector<OBB> ShizukuEngine::CreateAnimationModelOBBsCollision(
 	/*スキン付きモデルを受け取る*/
 	SkinnedModel* model = mModelManager.GetSkinned(modelIndex);
 
-	//if (!model) {return;}
-	//if (boneSlot < 0) { return; }
+	if (!model) {std::vector<OBB>;}
+	if (boneSlot < 0) {std::vector<OBB>; }
 
 	/*ワールドマトリックスの作成*/
 	Matrix4x4 worldMat = MakeAffineMatrix(scale, rot, pos);

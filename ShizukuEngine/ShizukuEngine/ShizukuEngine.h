@@ -36,12 +36,15 @@
 #include "Model/3DAnimation/Animation.h"
 #include "Model/3DAnimation/Animator.h"
 
+#include "Sound/Sound.h"
+
 
 using Microsoft::WRL::ComPtr;
 using namespace std;
 
 struct VertexData;//ベクトルがたのデータが入ってる構造体
 struct Material;//マテリアルの基本構造体
+struct SoundData;
 
 struct DrawRequest;
 
@@ -80,6 +83,16 @@ public:
 	int LoadModel(const std::string& filePath);
 
 	//--------------------------------------------------------------
+	//音楽ファイル読み込み関数（対応してるのはWAV、MP3）
+	//--------------------------------------------------------------
+	SoundData LoadSound(const char *filePath);
+
+	//--------------------------------------------------------------
+	//音楽再生関数（対応してるのはWAV、MP3）
+	//--------------------------------------------------------------
+	void SoundPlay(SoundData soundData);
+
+	//--------------------------------------------------------------
 	//アニメーションスキン付きmodel読み込み関数
 	//--------------------------------------------------------------
 	int LoadSkinnedModel(const std::string& filePath);
@@ -88,11 +101,20 @@ public:
 	//アニメーションスキン付きmodel読み込み関数
 	//--------------------------------------------------------------
 	int LoadAnimation(const std::string& animationPath, int skinnedModel);
+	
+	//--------------------------------------------------------------
+	//アニメーションの作成関数
+	//--------------------------------------------------------------
+	int CreateAnimator(int animation);
+
+	//--------------------------------------------------------------
+	//アニメーション変更作成関数
+	//--------------------------------------------------------------
+	void ChangeAnimation(int animators, int animation, bool isRooped = true);
 
 	//--------------------------------------------------------------
 	//パーティクルのフィールド作成関数
 	//--------------------------------------------------------------
-
 	int CreateAccelerationField(const AccelerationField& field, int emitterIndex);
 
 	//--------------------------------------------------------------
@@ -106,6 +128,9 @@ public:
 	// 色の固定ができますデフォルトはランダムが指定されています
 	//--------------------------------------------------------------
 	int CreateGPUEmitter(const Emitter& emitter, int modelIndex, Vector4 color = { 1.0f,1.0f,1.0f,1.0f }, bool isFixedColor = false);
+
+	
+	
 
 	Camera& GetCamera() { return mCamera; }
 
@@ -174,6 +199,11 @@ public:
 
 
 
+	//-----------------------------------getter、セッター関数-----------------------------------//
+
+
+
+
 private://ヘルパー関数など内部関数がメイン
 
 	//ヘルパー関数
@@ -196,6 +226,7 @@ private://各種変数などの初期化
 	TextureManager mTextureManager{};
 	LightManager mLightManager;
 	Input mInput{};
+	Sound* mSound{};
 
 	std::vector<std::unique_ptr<Animation>> mAnimations;
 	Animation mAnimation{};

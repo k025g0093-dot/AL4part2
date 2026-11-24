@@ -12,6 +12,7 @@ void GameScene::Initialize(ShizukuEngine* engine) {
 	field = mEngine->LoadModel("resources/field/field.obj");
 	player = mEngine->LoadSkinnedModel("resources/Flair/Flair.dae");
 	dancce = mEngine->LoadAnimation("resources/Flair/Flair.dae", player);
+	dancce = mEngine->CreateAnimator(dancce);
 
 	bulletModel = mEngine->LoadModel("resources/bullet/bullet.fbx");
 	enemyMode = mEngine->LoadModel("resources/enemy/enemy.fbx");
