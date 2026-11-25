@@ -20,6 +20,9 @@ public:
 	int GetModel() const { return mModel; }
 	bool IsShotThisFrame() const { return mShotThisFrame; }
 
+	int GetHp()const { return mHp; }
+	void UpDateDamage();
+
 private:
 
 	int mModel = -1;
@@ -28,6 +31,10 @@ private:
 
 	Vector3 mPosition{};
 	float mRotationY = 0.0f;
+
+	int damage = 1;
+	int mHp = mMaxHp;
+	int mMaxHp = 10;
 
 	float mSpeed = 10.0f;
 	float mFireInterval = 0.1f;

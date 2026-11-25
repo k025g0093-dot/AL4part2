@@ -8,6 +8,7 @@ void Player::Initialize(int model, int animationModel,const Vector3& position) {
 	mModel = model;
 	mAnimation = animationModel;
 	mPosition = position;
+	mHp = mMaxHp;
 }
 
 void Player::Update(const PlayerCommand& cmd, float dt) {
@@ -29,6 +30,9 @@ void Player::Update(const PlayerCommand& cmd, float dt) {
 
 }
 
+void Player::UpDateDamage() {
+	mHp -= damage;
+}
 
 void Player::Draw(ShizukuEngine* engine) {
 		engine->DrawSkinnedModel(

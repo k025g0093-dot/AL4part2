@@ -15,9 +15,12 @@ void Enemy::Initialize(
 	//タイプに応じて速度変更
 	if (mType == Type::kChase) {
 		mSpeed = 4.0f;
+		mHp = 6;
 	}
 	else {
 		mSpeed = 2.0f;
+		mHp = 3;
+
 	}
 }
 

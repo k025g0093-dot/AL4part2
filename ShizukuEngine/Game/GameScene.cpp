@@ -44,7 +44,7 @@ void GameScene::Update(float dt) {
 
 		Run(dt);
 
-		if (mEngine->GetInput().GetKeyDown(VK_CONTROL)) {
+		if (mPlayer.GetHp() < 0) {
 			mFade->Start(Fade::Status::FadeOut, 1.0f);
 			mPhese = Phese::kFadeOut;
 		}
@@ -160,6 +160,7 @@ void GameScene::AllCollision() {
 
 			Vector3 pos=mPlayer.GetPosition();
 			pos+=0.5f;
+			mPlayer.UpDateDamage();
 			mPlayer.SetPosition(pos);
 		}
 	}
