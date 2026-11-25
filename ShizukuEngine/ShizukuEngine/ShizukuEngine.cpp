@@ -64,7 +64,7 @@ void ShizukuEngine::Initialize(int width, int Height) {
 		&mDX12Context,
 		&mRenderTexture);
 
-	mInput.SetWindou(mWinApp.GetHwnd());
+	//mInput.SetWindou(mWinApp.GetHwnd());
 
 
 	//ImGuiの初期化
@@ -535,6 +535,10 @@ bool ShizukuEngine::IsAnimationOBBsToAnimationOBBs(const std::vector<OBB>& obb1,
 
 bool ShizukuEngine::IsAnimationOBBToOBB(const std::vector<OBB>& obb1, const OBB& obb2) {
 	return IsAnimationOBBsToOBBCollision(obb1, obb2);
+}
+
+bool ShizukuEngine::IsOBBToOBB(const OBB& obb1, const OBB& obb2) {
+	return IsOBBToOBBCollision(obb1, obb2);
 }
 
 #pragma endregion 
