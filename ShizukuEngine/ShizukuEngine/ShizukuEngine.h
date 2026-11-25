@@ -38,6 +38,9 @@
 
 #include "Sound/Sound.h"
 
+/*ランダム関数などの便利関数*/
+#include "Math/RandomEngine.h"
+
 
 using Microsoft::WRL::ComPtr;
 using namespace std;
@@ -205,6 +208,8 @@ public:
 	//-----------------------------------getter、セッター関数-----------------------------------//
 
 
+	//-----------------------------------ランダム関数などの便利関数-----------------------------------//
+	float RandomFloat(float min, float max);
 
 
 private://ヘルパー関数など内部関数がメイン
@@ -273,6 +278,8 @@ private://各種変数などの初期化
 
 	//デルタタイマーを取得するため
 	Clock mClock;
+
+	RandomEngine* mRandomEngine{};
 
 	Matrix4x4 mViewProjectionMatrix;
 	Vector3 mShadowCenter{};

@@ -67,7 +67,7 @@ void ShadowPass::Update(const LightData& light,Vector3 shadowCenter)
 	if (std::abs(lightDir.Dot(up)) > 0.99f) up = { 0.0f, 0.0f, 1.0f };
 
 	Matrix4x4 view = MakeLookAtMatrix(lightPos, shadowCenter, up);
-	Matrix4x4 proj = MakeOrthographicMatrix(-15.0f, 15.0f, 15.0f, -15.0f, 0.1f, 100.0f);
+	Matrix4x4 proj = MakeOrthographicMatrix(-25.0f, 45.0f, 45.0f, -25.0f, 0.01f, 100.0f);
 	*mMappedLightVP = Multiply(view, proj);
 }
 

@@ -9,6 +9,7 @@
 
 /*敵関係*/
 #include "Enemy/Enemy.h"
+#include "Enemy/MiniBoss.h"
 
 /*カメラ*/
 #include "FollowCamera.h"
@@ -29,6 +30,7 @@ private:
 	void AddAllyBullet(PlayerBullet* bullet);
 	void Run(float dt);
 	void SpwanEnemy();
+	void SpwanMiniBoss();
 	void AllCollision();
 
 
@@ -46,6 +48,9 @@ private:
 
 	Enemy mEnemy;
 	std::list<Enemy*>allyEnemys;
+
+	MiniBoss mMiniBoss;
+	std::list<MiniBoss*>allyMiniBoss;
 
 
 	FollowCamera mFollowCamera;

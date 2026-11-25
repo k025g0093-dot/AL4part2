@@ -81,6 +81,9 @@ void GameScene::Draw() {
 	for (Enemy* enemy : allyEnemys) {
 		enemy->Draw(mEngine);
 	}
+	for (MiniBoss* miniBoss : allyMiniBoss) {
+		miniBoss->Draw(mEngine);
+	}
 
 
 }
@@ -117,6 +120,14 @@ void GameScene::Run(float dt) {
 		return false;
 		});
 
+	allyMiniBoss.remove_if([](MiniBoss* miniBoss) {
+		if (miniBoss->GetHp()<0) {
+			delete miniBoss;
+			return true;
+		}
+		return false;
+		});
+
 	for (PlayerBullet* bullet : allyBullets) {
 		bullet->Update(dt);
 	}
@@ -125,11 +136,16 @@ void GameScene::Run(float dt) {
 		enemy->Update(mPlayer.GetPosition(), dt);
 	}
 
+	for (MiniBoss* miniBoss : allyMiniBoss) {
+		miniBoss->Update(mPlayer.GetPosition(), dt);
+	}
+
 	mSpawnTimer += dt;
 	if (mSpawnTimer >= mSpawnInterval) {
 		mSpawnTimer = 0.0f;
 		if (allyEnemys.size() < mMaxEnemyCount) {
 			SpwanEnemy();
+			SpwanMiniBoss();
 		}
 	}
 
@@ -138,56 +154,6 @@ void GameScene::Run(float dt) {
 }
 
 
-void GameScene::AllCollision() {
-
-	/*敵とプレイヤーの当たり判定*/
-	for (Enemy* enemy : allyEnemys) {
-		OBB enemyObb{};
-		enemyObb.center = enemy->GetPosition();
-		enemyObb.orientations[0] = {1,0,0};
-		enemyObb.orientations[1] = {0,1,1};
-		enemyObb.orientations[2] = {0,0,1};
-		enemyObb.size = { 1.0f,1.0f,1.0f };
-
-		OBB playerObb{};
-		playerObb.center = mPlayer.GetPosition();
-		playerObb.orientations[0] = {1,0,0};
-		playerObb.orientations[1] = {0,1,1};
-		playerObb.orientations[2] = {0,0,1};
-		playerObb.size = { 1.0f,1.0f,1.0f };
-
-		if (mEngine->IsOBBToOBB(playerObb, enemyObb)) {
-
-			Vector3 pos=mPlayer.GetPosition();
-			pos+=0.5f;
-			mPlayer.UpDateDamage();
-			mPlayer.SetPosition(pos);
-		}
-	}
-
-	/*敵とプレイヤーの弾の当たり判定*/
-	for (Enemy* enemy : allyEnemys) {
-		OBB enemyObb{};
-		enemyObb.center = enemy->GetPosition();
-		enemyObb.orientations[0] = { 1,0,0 };
-		enemyObb.orientations[1] = { 0,1,1 };
-		enemyObb.orientations[2] = { 0,0,1 };
-		enemyObb.size = { 1.0f,1.0f,1.0f };
-		for (PlayerBullet* bullet : allyBullets) {
-		
-			OBB playerBulletObb{};
-			playerBulletObb.center = bullet->GetPosition();
-			playerBulletObb.orientations[0] = { 1,0,0 };
-			playerBulletObb.orientations[1] = { 0,1,1 };
-			playerBulletObb.orientations[2] = { 0,0,1 };
-			playerBulletObb.size = { 1.0f,1.0f,1.0f };
-		
-			if (mEngine->IsOBBToOBB(playerBulletObb, enemyObb)) {
-				enemy->UpDateDamage();
-			}
-		}
-	}
-}
 
 
 void GameScene::AddAllyBullet(PlayerBullet* bullet) {
@@ -195,11 +161,8 @@ void GameScene::AddAllyBullet(PlayerBullet* bullet) {
 }
 
 void GameScene::SpwanEnemy() {
-
 	Vector3 spawnPosition{};
-
 	Enemy::Type type = Enemy::Type::kChase;
-
 	switch (mSpawnCount%4)
 	{
 	case 0:
@@ -217,22 +180,134 @@ void GameScene::SpwanEnemy() {
 	default:
 		break;
 	}
-
 	if (mSpawnCount % 5 == 1) {
 		type = Enemy::Type::kRanged;
 	}
-
 	// ザコ敵生成
 	Enemy* newEnemy=new Enemy();
-
 	newEnemy->Initialize(
 		enemyMode, -1,
 		spawnPosition,
 		type
 	);
-
 	allyEnemys.push_back(newEnemy);
-
 	mSpawnCount++;
+}
 
+
+void GameScene::SpwanMiniBoss() {
+
+	Vector3 spawnPosition{};
+
+	spawnPosition.x = mEngine->RandomFloat(mPlayer.GetPosition().x - 20, mPlayer.GetPosition().x + 20);
+	spawnPosition.y = 0.0f;
+	spawnPosition.z = mEngine->RandomFloat(mPlayer.GetPosition().z - 20, mPlayer.GetPosition().z + 20);
+
+	MiniBoss* newMiniBoss = new MiniBoss();
+	newMiniBoss->Initialize(
+		enemyMode, -1,
+		spawnPosition
+	);
+	allyMiniBoss.push_back(newMiniBoss);
+	mSpawnCount++;
+	
+}
+
+/*当たり判定*/
+
+void GameScene::AllCollision() {
+
+	/*敵とプレイヤーの当たり判定*/
+	for (Enemy* enemy : allyEnemys) {
+		OBB enemyObb{};
+		enemyObb.center = enemy->GetPosition();
+		enemyObb.orientations[0] = { 1,0,0 };
+		enemyObb.orientations[1] = { 0,1,1 };
+		enemyObb.orientations[2] = { 0,0,1 };
+		enemyObb.size = { 1.0f,1.0f,1.0f };
+
+		OBB playerObb{};
+		playerObb.center = mPlayer.GetPosition();
+		playerObb.orientations[0] = { 1,0,0 };
+		playerObb.orientations[1] = { 0,1,1 };
+		playerObb.orientations[2] = { 0,0,1 };
+		playerObb.size = { 1.0f,1.0f,1.0f };
+
+		if (mEngine->IsOBBToOBB(playerObb, enemyObb)) {
+
+			Vector3 pos = mPlayer.GetPosition();
+			pos += 0.5f;
+			mPlayer.UpDateDamage();
+			mPlayer.SetPosition(pos);
+		}
+	}
+
+	/*敵とプレイヤーの弾の当たり判定*/
+	for (Enemy* enemy : allyEnemys) {
+		OBB enemyObb{};
+		enemyObb.center = enemy->GetPosition();
+		enemyObb.orientations[0] = { 1,0,0 };
+		enemyObb.orientations[1] = { 0,1,1 };
+		enemyObb.orientations[2] = { 0,0,1 };
+		enemyObb.size = { 1.0f,1.0f,1.0f };
+		for (PlayerBullet* bullet : allyBullets) {
+
+			OBB playerBulletObb{};
+			playerBulletObb.center = bullet->GetPosition();
+			playerBulletObb.orientations[0] = { 1,0,0 };
+			playerBulletObb.orientations[1] = { 0,1,1 };
+			playerBulletObb.orientations[2] = { 0,0,1 };
+			playerBulletObb.size = { 1.0f,1.0f,1.0f };
+
+			if (mEngine->IsOBBToOBB(playerBulletObb, enemyObb)) {
+				enemy->UpDateDamage();
+			}
+		}
+	}
+	for (MiniBoss* miniBoss : allyMiniBoss) {
+		OBB miniBossObb{};
+		miniBossObb.center = miniBoss->GetPosition();
+		miniBossObb.orientations[0] = { 1,0,0 };
+		miniBossObb.orientations[1] = { 0,1,1 };
+		miniBossObb.orientations[2] = { 0,0,1 };
+		miniBossObb.size = { 2.5f,2.5f,2.5f };
+
+		OBB playerObb{};
+		playerObb.center = mPlayer.GetPosition();
+		playerObb.orientations[0] = { 1,0,0 };
+		playerObb.orientations[1] = { 0,1,1 };
+		playerObb.orientations[2] = { 0,0,1 };
+		playerObb.size = { 1.0f,1.0f,1.0f };
+
+		if (mEngine->IsOBBToOBB(playerObb, miniBossObb)) {
+
+			Vector3 pos = mPlayer.GetPosition();
+			pos += 0.5f;
+			mPlayer.UpDateDamage();
+			mPlayer.SetPosition(pos);
+		}
+	}
+
+	/*敵とプレイヤーの弾の当たり判定*/
+	for (MiniBoss* miniBoss : allyMiniBoss) {
+		OBB miniBossObb{};
+		miniBossObb.center = miniBoss->GetPosition();
+		miniBossObb.orientations[0] = { 1,0,0 };
+		miniBossObb.orientations[1] = { 0,1,1 };
+		miniBossObb.orientations[2] = { 0,0,1 };
+		miniBossObb.size = { 2.5f,2.5f,2.5f };
+		for (PlayerBullet* bullet : allyBullets) {
+
+			OBB playerBulletObb{};
+			playerBulletObb.center = bullet->GetPosition();
+			playerBulletObb.orientations[0] = { 1,0,0 };
+			playerBulletObb.orientations[1] = { 0,1,1 };
+			playerBulletObb.orientations[2] = { 0,0,1 };
+			playerBulletObb.size = { 1.0f,1.0f,1.0f };
+
+			if (mEngine->IsOBBToOBB(playerBulletObb, miniBossObb)) {
+				miniBoss->UpDateDamage();
+			}
+		}
+	}
 }

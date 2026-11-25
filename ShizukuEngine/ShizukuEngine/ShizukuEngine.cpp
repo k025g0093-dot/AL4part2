@@ -47,6 +47,7 @@ void ShizukuEngine::Initialize(int width, int Height) {
 
 	mLightManager.Initialize(mDX12Context.GetDevice());
 	mModelManager.Initialize(mDX12Context.GetDevice(), &mTextureManager);
+	mRandomEngine = new RandomEngine();
 
 	mRenderTexture.CreateSceneRtv(
 		mDX12Context.GetDevice(),
@@ -539,6 +540,15 @@ bool ShizukuEngine::IsAnimationOBBToOBB(const std::vector<OBB>& obb1, const OBB&
 
 bool ShizukuEngine::IsOBBToOBB(const OBB& obb1, const OBB& obb2) {
 	return IsOBBToOBBCollision(obb1, obb2);
+}
+
+#pragma endregion 
+
+#pragma region ランダムエンジンの関数
+
+float ShizukuEngine::RandomFloat(float min, float max)
+{
+	return mRandomEngine->GetRandomFloat(min, max);
 }
 
 #pragma endregion 
