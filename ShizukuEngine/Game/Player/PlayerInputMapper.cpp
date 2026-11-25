@@ -8,7 +8,7 @@ PlayerCommand PlayerInputMapper::Make(const Input& input, float dt ){
 			float(input.GetKey('W') )- float(input.GetKey('S'))
 			);
 
-	const float turn = float(input.GetKey(VK_LEFT)) - float(input.GetKey(VK_RIGHT));
+	const float turn = float(input.GetKey(VK_RIGHT)) - float(input.GetKey(VK_LEFT));
 
 	mAimAngle += turn * mAimTurnSpeed * dt;
 	mAimAngle = std::remainder(mAimAngle, 2.0f * std::numbers::pi_v<float>);
