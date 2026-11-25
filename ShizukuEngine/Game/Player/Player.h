@@ -15,6 +15,7 @@ public:
 	void Draw(ShizukuEngine* engine);
 
 	const Vector3& GetPosition() const { return mPosition; }
+	void SetPosition(const Vector3& pos) { mPosition = pos; }
 	float GetRotationY() const { return mRotationY; }
 	int GetModel() const { return mModel; }
 	bool IsShotThisFrame() const { return mShotThisFrame; }

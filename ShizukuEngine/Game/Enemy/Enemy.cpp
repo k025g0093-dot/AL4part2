@@ -73,13 +73,20 @@ void Enemy::UpdateRanged(const Vector3& playerPosition, float dt) {
 	}
 }
 
+void Enemy::UpDateDamage() {
+	mHp -= damage;
+}
+
+
 void Enemy::Draw(ShizukuEngine*engine) {
-	engine->DrawModel(
-		mModel,
-		mPosition,
-		{ 0.0f, mRotationY, 0.0f },
-		{ 1.0f, 1.0f, 1.0f },
-		{ 1.0f, 1.0f, 1.0f, 1.0f }
-	);
+	if (mHp > 0) {
+		engine->DrawModel(
+			mModel,
+			mPosition,
+			{ 0.0f, mRotationY, 0.0f },
+			{ 1.0f, 1.0f, 1.0f },
+			{ 1.0f, 1.0f, 1.0f, 1.0f }
+		);
+	}
 }
 

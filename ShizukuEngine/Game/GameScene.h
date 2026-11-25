@@ -29,6 +29,8 @@ private:
 	void AddAllyBullet(PlayerBullet* bullet);
 	void Run(float dt);
 	void SpwanEnemy();
+	void AllCollision();
+
 
 private:
 
@@ -43,7 +45,7 @@ private:
 	PlayerInputMapper mInputMapper;
 
 	Enemy mEnemy;
-	std::vector<Enemy>allyEnemys;
+	std::list<Enemy*>allyEnemys;
 
 
 	FollowCamera mFollowCamera;

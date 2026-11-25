@@ -78,8 +78,8 @@ void GameScene::Draw() {
 			{ 1,1,1 }, { 1,1,1,1 });
 	}
 
-	for (Enemy& enemy : allyEnemys) {
-		enemy.Draw(mEngine);
+	for (Enemy* enemy : allyEnemys) {
+		enemy->Draw(mEngine);
 	}
 
 
@@ -109,12 +109,20 @@ void GameScene::Run(float dt) {
 		return false;
 		});
 
+	allyEnemys.remove_if([](Enemy* enemy) {
+		if (enemy->GetHp()<0) {
+			delete enemy;
+			return true;
+		}
+		return false;
+		});
+
 	for (PlayerBullet* bullet : allyBullets) {
 		bullet->Update(dt);
 	}
 
-	for (Enemy& enemy : allyEnemys) {
-		enemy.Update(mPlayer.GetPosition(), dt);
+	for (Enemy* enemy : allyEnemys) {
+		enemy->Update(mPlayer.GetPosition(), dt);
 	}
 
 	mSpawnTimer += dt;
@@ -125,7 +133,61 @@ void GameScene::Run(float dt) {
 		}
 	}
 
+	AllCollision();
+
 }
+
+
+void GameScene::AllCollision() {
+
+	/*敵とプレイヤーの当たり判定*/
+	for (Enemy* enemy : allyEnemys) {
+		OBB enemyObb{};
+		enemyObb.center = enemy->GetPosition();
+		enemyObb.orientations[0] = {1,0,0};
+		enemyObb.orientations[1] = {0,1,1};
+		enemyObb.orientations[2] = {0,0,1};
+		enemyObb.size = { 1.0f,1.0f,1.0f };
+
+		OBB playerObb{};
+		playerObb.center = mPlayer.GetPosition();
+		playerObb.orientations[0] = {1,0,0};
+		playerObb.orientations[1] = {0,1,1};
+		playerObb.orientations[2] = {0,0,1};
+		playerObb.size = { 1.0f,1.0f,1.0f };
+
+		if (mEngine->IsOBBToOBB(playerObb, enemyObb)) {
+
+			Vector3 pos=mPlayer.GetPosition();
+			pos+=0.5f;
+			mPlayer.SetPosition(pos);
+		}
+	}
+
+	/*敵とプレイヤーの弾の当たり判定*/
+	for (Enemy* enemy : allyEnemys) {
+		OBB enemyObb{};
+		enemyObb.center = enemy->GetPosition();
+		enemyObb.orientations[0] = { 1,0,0 };
+		enemyObb.orientations[1] = { 0,1,1 };
+		enemyObb.orientations[2] = { 0,0,1 };
+		enemyObb.size = { 1.0f,1.0f,1.0f };
+		for (PlayerBullet* bullet : allyBullets) {
+		
+			OBB playerBulletObb{};
+			playerBulletObb.center = bullet->GetPosition();
+			playerBulletObb.orientations[0] = { 1,0,0 };
+			playerBulletObb.orientations[1] = { 0,1,1 };
+			playerBulletObb.orientations[2] = { 0,0,1 };
+			playerBulletObb.size = { 1.0f,1.0f,1.0f };
+		
+			if (mEngine->IsOBBToOBB(playerBulletObb, enemyObb)) {
+				enemy->UpDateDamage();
+			}
+		}
+	}
+}
+
 
 void GameScene::AddAllyBullet(PlayerBullet* bullet) {
 	allyBullets.push_back(bullet);
@@ -160,9 +222,9 @@ void GameScene::SpwanEnemy() {
 	}
 
 	// ザコ敵生成
-	Enemy newEnemy;
+	Enemy* newEnemy=new Enemy();
 
-	newEnemy.Initialize(
+	newEnemy->Initialize(
 		enemyMode, -1,
 		spawnPosition,
 		type

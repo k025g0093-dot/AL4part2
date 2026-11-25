@@ -33,6 +33,9 @@ public:
 	bool IsAlive() const { return mIsAlive; }
 	bool IsSpwanEnemy()const { return mIsSpwan; }
 
+	int GetHp()const { return mHp; }
+	void UpDateDamage();
+
 private:
 
 	void UpdateChase(
@@ -45,6 +48,7 @@ private:
 		float dt
 	);
 
+
 private:
 	
 	int mModel = -1;
@@ -54,6 +58,9 @@ private:
 	Vector3 mPosition{};
 	float mRotationY = 0.0f;
 	Type mType{};
+
+	int damage = 1;
+	int mHp = 4;
 
 
 	float mSpeed={};

@@ -64,7 +64,7 @@ void ShizukuEngine::Initialize(int width, int Height) {
 		&mDX12Context,
 		&mRenderTexture);
 
-	//mInput.SetWindou(mWinApp.GetHwnd());
+	mInput.SetWindou(mWinApp.GetHwnd());
 
 
 	//ImGuiの初期化
