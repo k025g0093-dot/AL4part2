@@ -25,7 +25,7 @@ public:
 
 	bool IsFinished()const { return isFinished; }
 
-	bool IsClear()const { return isClear; }
+	bool IsClear()const { return mIsClear; }
 
 private:
 
@@ -69,7 +69,7 @@ private:
 
 	//ゲームの状態
 	bool isFinished = false;
-	bool isClear = false;
+	bool mIsClear = false;
 
 	/*エネミーの出現カウント*/
 	int mSpawnCount = 0;

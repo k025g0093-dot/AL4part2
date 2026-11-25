@@ -45,6 +45,7 @@ void GameScene::Update(float dt) {
 		Run(dt);
 
 		if (mPlayer.GetHp() < 0) {
+			mIsClear = false;
 			mFade->Start(Fade::Status::FadeOut, 1.0f);
 			mPhese = Phese::kFadeOut;
 		}
