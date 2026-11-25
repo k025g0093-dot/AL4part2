@@ -1,6 +1,7 @@
 ﻿#include "ShizukuEngine/ShizukuEngine.h"
 #include "Game/GameScene.h"
 #include "Game/TitleScene.h"
+#include "Game/GameOver.h"
 #include <Windows.h>
 #include <memory>
 
@@ -10,7 +11,7 @@ const int32_t kClineHeight = 720;
 GameScene* gameScene = nullptr;
 TitleScene* title = nullptr;
 //GameClear* clear_ = nullptr;
-//GameOver* gameOver_ = nullptr;
+GameOver* gameOver = nullptr;
 
 
 void ChangeScene();
@@ -77,17 +78,35 @@ void ChangeScene() {
 		break;
 	case Scene::kGame:
 
-		if (gameScene->IsFinished()) {
+		if (gameScene->IsClear()) {
+			/*ゲームクリア時の処理*/
+
+
+		}
+		else {
+			/*ゲームオーバー時の処理*/
+			if (gameScene->IsFinished()) {
+				scene = Scene::kGameOver;
+				delete gameScene;
+				gameScene = nullptr;
+
+				gameOver = new GameOver;
+				gameOver->Initialize(engine);
+			}
+		}
+		break;
+
+	case Scene::kGameOver:
+
+		if (gameOver->IsFinished()) {
 			scene = Scene::kTitle;
-			delete gameScene;
-			gameScene = nullptr;
+			delete gameOver;
+			gameOver = nullptr;
 
 			title = new TitleScene;
 			title->Initialize(engine);
 		}
 
-		break;
-	
 	default:
 		break;
 	}
@@ -98,22 +117,20 @@ void ChangeScene() {
 void UpdateScene() {
 	switch (scene) {
 	case Scene::kTitle: // タイトル
-		// LoadDebugSettings();
 
-		title->Update(1.0f/60.0f);
+		title->Update(1.0f / 60.0f);
 		break;
 	case Scene::kGame: // ゲーム中
-		// LoadDebugSettings();
 
 		gameScene->Update(1.0f / 60.0f);
 		break;
-	//case Scene::kGameClear: // ゲームクリア
-	//	clear_->Updete();
-	//	break;
+		//case Scene::kGameClear: // ゲームクリア
+		//	clear_->Updete();
+		//	break;
 
-	//case Scene::kGameOver: // ゲームオーバー
-	//	gameOver_->Updete();
-	//	break;
+	case Scene::kGameOver: // ゲームオーバー
+		gameOver->Update(1.0f / 60.0f);
+		break;
 
 	default:
 		break;
@@ -134,15 +151,15 @@ void DrawScene() {
 
 		gameScene->Draw();
 		break;
-	//case Scene::kGameClear: // ゲームクリア
-	//	clear_->Draw();
+		//case Scene::kGameClear: // ゲームクリア
+		//	clear_->Draw();
 
-	//	break;
+		//	break;
 
-	//case Scene::kGameOver: // ゲームオーバー
-	//	gameOver_->Draw();
+	case Scene::kGameOver: // ゲームオーバー
+		gameOver->Draw();
 
-	//	break;
+		break;
 
 	default:
 		break;

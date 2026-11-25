@@ -25,6 +25,8 @@ public:
 
 	bool IsFinished()const { return isFinished; }
 
+	bool IsClear()const { return isClear; }
+
 private:
 
 	void AddAllyBullet(PlayerBullet* bullet);
@@ -67,6 +69,7 @@ private:
 
 	//ゲームの状態
 	bool isFinished = false;
+	bool isClear = false;
 
 	/*エネミーの出現カウント*/
 	int mSpawnCount = 0;

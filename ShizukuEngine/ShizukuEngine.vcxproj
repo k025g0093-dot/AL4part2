@@ -155,6 +155,7 @@
     <ClCompile Include="Game\Enemy\MiniBoss.cpp" />
     <ClCompile Include="Game\FollowCamera.cpp" />
     <ClCompile Include="Game\Fade.cpp" />
+    <ClCompile Include="Game\GameOver.cpp" />
     <ClCompile Include="Game\GameScene.cpp" />
     <ClCompile Include="Game\Player\Player.cpp" />
     <ClCompile Include="Game\Player\PlayerInputMapper.cpp" />
@@ -211,6 +212,7 @@
     <ClInclude Include="Game\Enemy\MiniBoss.h" />
     <ClInclude Include="Game\FollowCamera.h" />
     <ClInclude Include="Game\Fade.h" />
+    <ClInclude Include="Game\GameOver.h" />
     <ClInclude Include="Game\GameScene.h" />
     <ClInclude Include="Game\IScene.h" />
     <ClInclude Include="Game\Player\Player.h" />
